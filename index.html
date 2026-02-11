@@ -1,0 +1,1185 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dossiê Estatístico – Biologia & Saúde (Online)</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Boxplot plugin (Chart.js box/violin) -->
+  <script src="https://cdn.jsdelivr.net/npm/@sgratzl/chartjs-chart-boxplot@4.4.3/build/index.umd.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#0b1220;
+      --muted:#475569;
+      --card:#ffffff;
+      --line:#e5e7eb;
+      --shadow: 0 10px 30px rgba(2,6,23,.08);
+
+      --c1:#ff006e; /* magenta */
+      --c2:#3a86ff; /* azul vivo */
+      --c3:#8338ec; /* roxo */
+      --c4:#06d6a0; /* verde */
+      --c5:#ffbe0b; /* amarelo */
+      --c6:#fb5607; /* laranja */
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#fff 0%, #fff 60%, #f8fafc 100%);
+      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height:1.35;
+    }
+    header{
+      padding:28px 16px 14px;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(1200px 380px at 10% 0%, rgba(255,0,110,.10), transparent 60%),
+        radial-gradient(900px 340px at 70% 0%, rgba(58,134,255,.10), transparent 60%),
+        radial-gradient(900px 340px at 95% 20%, rgba(6,214,160,.10), transparent 60%),
+        #fff;
+    }
+    .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+    h1{
+      margin:0 0 8px;
+      font-size:28px;
+      letter-spacing:-.02em;
+    }
+    .subtitle{
+      margin:0 0 14px;
+      color:var(--muted);
+      max-width:900px;
+    }
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+    .badge{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow: 0 4px 14px rgba(2,6,23,.04);
+      color:#0f172a;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+      padding:16px 0 22px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .card h2{
+      margin:0;
+      padding:14px 14px 0;
+      font-size:16px;
+    }
+    .card .body{padding:14px}
+    textarea{
+      width:100%;
+      min-height:190px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size:12.5px;
+      outline:none;
+    }
+    textarea:focus{border-color:#94a3b8}
+    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+    .row > div{flex:1;min-width:200px}
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+    input[type="text"], select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 10px;
+      background:#fff;
+      color:var(--text);
+      outline:none;
+    }
+    input[type="file"]{width:100%}
+    .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    button{
+      border:none;
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+      color:#0b1220;
+      background: #f1f5f9;
+      border:1px solid var(--line);
+    }
+    button.primary{
+      background: linear-gradient(90deg, var(--c2), var(--c1));
+      color:white;
+      border:none;
+    }
+    button.accent{
+      background: linear-gradient(90deg, var(--c4), var(--c5));
+      color:#0b1220;
+      border:none;
+    }
+    button.warn{
+      background: linear-gradient(90deg, var(--c6), var(--c1));
+      color:white;
+      border:none;
+    }
+    .small{font-size:12px;color:var(--muted)}
+    .kpi{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
+    @media (max-width: 560px){ .kpi{grid-template-columns:1fr} }
+    .kpi .box{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      background:#fff;
+    }
+    .kpi .box .t{font-size:12px;color:var(--muted)}
+    .kpi .box .v{font-size:16px;font-weight:800;margin-top:4px}
+    .pill{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .pill.ok{border-color:rgba(6,214,160,.35); background:rgba(6,214,160,.08)}
+    .pill.warn{border-color:rgba(251,86,7,.35); background:rgba(251,86,7,.08)}
+    .pill.info{border-color:rgba(58,134,255,.35); background:rgba(58,134,255,.08)}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;}
+    .hr{height:1px;background:var(--line);margin:12px 0}
+    .explain{
+      border:1px dashed rgba(58,134,255,.35);
+      background:rgba(58,134,255,.06);
+      border-radius:14px;
+      padding:10px;
+      color:#0b1220;
+    }
+    .two{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 980px){ .two{grid-template-columns:1fr} }
+    .log{
+      white-space:pre-wrap;
+      background:#0b1220;
+      color:#e2e8f0;
+      border-radius:14px;
+      padding:10px;
+      font-size:12px;
+      max-height:220px;
+      overflow:auto;
+    }
+    .footer{
+      padding:18px 0 28px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    a{color:#0b1220}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Dossiê Estatístico – Biologia & Saúde</h1>
+    <p class="subtitle">
+      Uma plataforma simples para transformar observações do cotidiano (clima, rotina, dados públicos) em gráficos, estatísticas e interpretações.
+      Você cola os dados, escolhe o gráfico e o teste, e a página gera os resultados automaticamente.
+    </p>
+    <div class="badges">
+      <span class="badge">100% online</span>
+      <span class="badge">Dossiê semanal (máx. 1 lauda)</span>
+      <span class="badge">Gráficos “tipo Excel”</span>
+      <span class="badge">Paramétrico e não paramétrico</span>
+      <span class="badge">Regressão + Boxplot + Histograma</span>
+      <span class="badge">Exporta CSV/JSON</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <section class="card">
+      <h2>1) Dados (cole aqui) ou importe CSV</h2>
+      <div class="body">
+        <div class="row">
+          <div>
+            <label>Nome do aluno / identificação</label>
+            <input id="studentName" type="text" placeholder="Ex.: Maria Silva – Semana 03" />
+          </div>
+          <div>
+            <label>Variável (o que está medindo?)</label>
+            <input id="varName" type="text" placeholder="Ex.: Temperatura (°C) / Horas de sono / Passos" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label>Formato esperado (2 colunas): Grupo,Valor (tab ou vírgula) — exemplo:</label>
+            <div class="small mono">A, 23.1<br/>A, 24.0<br/>B, 21.4</div>
+          </div>
+          <div>
+            <label>Importar CSV (colunas: Grupo, Valor, opcional X, opcional Tamanho)</label>
+            <input id="csvFile" type="file" accept=".csv,text/csv" />
+          </div>
+        </div>
+
+        <textarea id="dataInput"></textarea>
+
+        <div class="btns">
+          <button class="primary" id="btnUpdate">Atualizar gráficos e análises</button>
+          <button class="accent" id="btnDemo">Carregar exemplo</button>
+          <button id="btnSave">Salvar no navegador</button>
+          <button id="btnLoad">Carregar salvo</button>
+          <button class="warn" id="btnClear">Limpar</button>
+        </div>
+        <p class="small">
+          Dica: se você tiver dados ao longo do tempo, use Grupo = “Série1” e a coluna X (opcional) como “dia”/“data”.
+          Para bolhas, use a coluna “Tamanho”.
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2) Configuração rápida</h2>
+      <div class="body">
+        <div class="two">
+          <div>
+            <label>Tipo de gráfico</label>
+            <select id="chartType">
+              <option value="bar">Colunas (Excel)</option>
+              <option value="line">Linha</option>
+              <option value="area">Área</option>
+              <option value="scatter">Dispersão (X vs Y)</option>
+              <option value="bubble">Bolhas (X,Y,Tamanho)</option>
+              <option value="radar">Radar</option>
+              <option value="pie">Pizza</option>
+              <option value="doughnut">Rosca</option>
+              <option value="hist">Histograma</option>
+              <option value="boxplot">Boxplot</option>
+            </select>
+          </div>
+          <div>
+            <label>Tipo de análise</label>
+            <select id="analysisType">
+              <option value="desc">Descritiva</option>
+              <option value="t">Teste t (2 grupos)</option>
+              <option value="anova">ANOVA (k grupos)</option>
+              <option value="mw">Mann–Whitney (2 grupos)</option>
+              <option value="kw">Kruskal–Wallis (k grupos)</option>
+              <option value="corr">Correlação (Pearson/Spearman)</option>
+              <option value="reg">Regressão linear (Y ~ X)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label>Método de correlação (se aplicável)</label>
+            <select id="corrMethod">
+              <option value="pearson">Pearson (paramétrico)</option>
+              <option value="spearman">Spearman (não paramétrico)</option>
+            </select>
+          </div>
+          <div>
+            <label>Resumo automático</label>
+            <div id="autoHint" class="explain small">
+              Cole dados e clique em “Atualizar”. A plataforma sugere se o caminho tende a ser paramétrico ou não, usando uma checagem simples de normalidade.
+            </div>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="kpi">
+          <div class="box">
+            <div class="t">Amostras (N)</div>
+            <div class="v" id="kN">–</div>
+          </div>
+          <div class="box">
+            <div class="t">Grupos</div>
+            <div class="v" id="kG">–</div>
+          </div>
+          <div class="box">
+            <div class="t">Normalidade (Jarque–Bera)</div>
+            <div class="v" id="kJB">–</div>
+            <div class="small" id="kJBNote"></div>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+        <div class="small">
+          Saída estatística (copie e cole no dossiê):
+        </div>
+        <div id="resultBox" class="log" aria-live="polite"></div>
+
+      </div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>3) Gráfico</h2>
+    <div class="body">
+      <canvas id="chart" height="120"></canvas>
+      <div class="hr"></div>
+      <div class="explain" id="chartExplain"></div>
+      <div class="btns" style="margin-top:10px">
+        <button id="btnExportCSV">Exportar dados (CSV)</button>
+        <button id="btnExportJSON">Exportar dados+resultados (JSON)</button>
+      </div>
+      <p class="small">
+        Observação: este app é excelente para estudo e dossiês. Para relatório final formal (publicação), recomende replicar em PAST4/R.
+      </p>
+    </div>
+  </section>
+
+  <div class="footer">
+    Desenvolvido para uso educacional em Estatística aplicada à Biologia, Ecologia e Saúde. Funciona offline após abrir uma vez (se o navegador mantiver cache).
+  </div>
+</main>
+
+<script>
+  // --------------------------
+  // Utilitários numéricos
+  // --------------------------
+  const sum = (a)=>a.reduce((p,c)=>p+c,0);
+  const mean = (a)=> a.length? sum(a)/a.length : NaN;
+  const variance = (a, sample=true)=>{
+    if(a.length < (sample?2:1)) return NaN;
+    const m = mean(a);
+    const v = a.reduce((p,c)=>p+(c-m)*(c-m),0);
+    return v / (a.length - (sample?1:0));
+  };
+  const sd = (a, sample=true)=> Math.sqrt(variance(a, sample));
+  const median = (a)=>{
+    if(!a.length) return NaN;
+    const b=[...a].sort((x,y)=>x-y);
+    const mid=Math.floor(b.length/2);
+    return b.length%2? b[mid] : (b[mid-1]+b[mid])/2;
+  };
+  const quantile = (a,q)=>{
+    if(!a.length) return NaN;
+    const b=[...a].sort((x,y)=>x-y);
+    const pos = (b.length-1)*q;
+    const base = Math.floor(pos);
+    const rest = pos-base;
+    if(b[base+1]===undefined) return b[base];
+    return b[base] + rest*(b[base+1]-b[base]);
+  };
+  const skewness = (a)=>{
+    const n=a.length; if(n<3) return NaN;
+    const m=mean(a); const s=sd(a,true); if(!isFinite(s) || s===0) return NaN;
+    const g = a.reduce((p,x)=>p+Math.pow((x-m)/s,3),0) * (n/((n-1)*(n-2)));
+    return g;
+  };
+  const kurtosisExcess = (a)=>{
+    const n=a.length; if(n<4) return NaN;
+    const m=mean(a); const s=sd(a,true); if(!isFinite(s) || s===0) return NaN;
+    const term1 = (n*(n+1))/((n-1)*(n-2)*(n-3));
+    const term2 = a.reduce((p,x)=>p+Math.pow((x-m)/s,4),0);
+    const term3 = (3*(n-1)*(n-1))/((n-2)*(n-3));
+    return term1*term2 - term3;
+  };
+
+  // Jarque–Bera: checagem simples de normalidade
+  const jarqueBera = (a)=>{
+    const n=a.length;
+    if(n<5) return {JB:NaN, p:NaN};
+    const s=skewness(a);
+    const k=kurtosisExcess(a);
+    const JB = (n/6)*(s*s + (k*k)/4);
+    // p-value aproximado usando qui-quadrado com 2 g.l.
+    // p = exp(-JB/2) * (1 + JB/2)  (CDF para df=2 => 1 - e^{-x/2})
+    // Para df=2, CDF = 1 - e^{-x/2}. Então p = e^{-JB/2}.
+    // Aqui mantemos uma aproximação conservadora: p = exp(-JB/2)
+    const p = Math.exp(-JB/2);
+    return {JB, p};
+  };
+
+  // Ranking para testes não paramétricos
+  function rank(values){
+    const indexed = values.map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v);
+    const ranks = new Array(values.length);
+    let i=0;
+    while(i<indexed.length){
+      let j=i;
+      while(j<indexed.length && indexed[j].v===indexed[i].v) j++;
+      const avgRank = (i+1 + j)/2;
+      for(let k=i;k<j;k++) ranks[indexed[k].i]=avgRank;
+      i=j;
+    }
+    return ranks;
+  }
+
+  // Correlação
+  function pearson(x,y){
+    const n=x.length; if(n!==y.length || n<2) return {r:NaN, p:NaN};
+    const mx=mean(x), my=mean(y);
+    let num=0, dx=0, dy=0;
+    for(let i=0;i<n;i++){
+      const a=x[i]-mx, b=y[i]-my;
+      num += a*b; dx += a*a; dy += b*b;
+    }
+    const r = num / Math.sqrt(dx*dy);
+    // p aproximado via t com n-2 gl
+    const t = r*Math.sqrt((n-2)/(1-r*r));
+    const p = approxTPValue(t, n-2);
+    return {r, p};
+  }
+
+  function spearman(x,y){
+    const rx=rank(x), ry=rank(y);
+    return pearson(rx,ry);
+  }
+
+  // Regressão linear simples
+  function linReg(x,y){
+    const n=x.length; if(n!==y.length || n<2) return null;
+    const mx=mean(x), my=mean(y);
+    let sxx=0, sxy=0, syy=0;
+    for(let i=0;i<n;i++){
+      const dx=x[i]-mx, dy=y[i]-my;
+      sxx += dx*dx; sxy += dx*dy; syy += dy*dy;
+    }
+    const b1 = sxy/sxx;
+    const b0 = my - b1*mx;
+    const yhat = x.map(v=>b0 + b1*v);
+    const ssRes = y.reduce((p,yi,i)=>p+(yi-yhat[i])**2,0);
+    const ssTot = syy;
+    const r2 = 1 - ssRes/ssTot;
+
+    // p-value do coeficiente b1 (aprox)
+    const se2 = ssRes/(n-2);
+    const seb1 = Math.sqrt(se2/sxx);
+    const t = b1/seb1;
+    const p = approxTPValue(t, n-2);
+
+    return {b0,b1,r2,t,p,yhat};
+  }
+
+  // Teste t (independente, variâncias iguais – versão ensino)
+  function tTest2(a,b){
+    const n1=a.length, n2=b.length;
+    if(n1<2 || n2<2) return null;
+    const m1=mean(a), m2=mean(b);
+    const v1=variance(a,true), v2=variance(b,true);
+    const sp = Math.sqrt(((n1-1)*v1 + (n2-1)*v2)/(n1+n2-2));
+    const t = (m1-m2)/(sp*Math.sqrt(1/n1 + 1/n2));
+    const df = n1+n2-2;
+    const p = approxTPValue(t, df);
+    return {t, df, p, m1, m2};
+  }
+
+  // ANOVA 1 fator
+  function anovaOneWay(groups){
+    const keys = Object.keys(groups);
+    if(keys.length<2) return null;
+    const all = keys.flatMap(k=>groups[k]);
+    const grand = mean(all);
+    let ssb=0, ssw=0, N=0;
+    keys.forEach(k=>{
+      const arr=groups[k]; N+=arr.length;
+      const mk=mean(arr);
+      ssb += arr.length*(mk-grand)**2;
+      ssw += arr.reduce((p,x)=>p+(x-mk)**2,0);
+    });
+    const dfb = keys.length-1;
+    const dfw = N-keys.length;
+    const msb = ssb/dfb;
+    const msw = ssw/dfw;
+    const F = msb/msw;
+    const p = approxFPValue(F, dfb, dfw);
+    return {F, dfb, dfw, p};
+  }
+
+  // Mann–Whitney U (2 grupos)
+  function mannWhitney(a,b){
+    const n1=a.length, n2=b.length;
+    if(n1<1 || n2<1) return null;
+    const combined = a.concat(b);
+    const r = rank(combined);
+    const r1 = r.slice(0,n1);
+    const R1 = sum(r1);
+    const U1 = R1 - (n1*(n1+1))/2;
+    const U2 = n1*n2 - U1;
+    const U = Math.min(U1,U2);
+
+    // Aproximação normal (z) com correção simples
+    const mu = n1*n2/2;
+    const sigma = Math.sqrt(n1*n2*(n1+n2+1)/12);
+    const z = (U - mu) / sigma;
+    const p = 2*(1-phi(Math.abs(z))); // duas caudas
+    return {U, z, p};
+  }
+
+  // Kruskal–Wallis (k grupos)
+  function kruskalWallis(groups){
+    const keys = Object.keys(groups);
+    if(keys.length<2) return null;
+    const all = keys.flatMap(k=>groups[k].map(v=>({g:k,v})));
+    const values = all.map(o=>o.v);
+    const r = rank(values);
+
+    let N = values.length;
+    let sumRanks = {};
+    let ns = {};
+    keys.forEach(k=>{sumRanks[k]=0; ns[k]=0;});
+    all.forEach((o,i)=>{
+      sumRanks[o.g]+=r[i];
+      ns[o.g]+=1;
+    });
+
+    let H=0;
+    keys.forEach(k=>{
+      H += (sumRanks[k]*sumRanks[k])/ns[k];
+    });
+    H = (12/(N*(N+1)))*H - 3*(N+1);
+
+    // p-value aprox via qui-quadrado (df=k-1)
+    const df = keys.length-1;
+    const p = approxChiSqPValue(H, df);
+    return {H, df, p};
+  }
+
+  // --------------------------
+  // Aproximações de p-value
+  // --------------------------
+  // CDF normal padrão
+  function phi(z){
+    // Abramowitz & Stegun approximation
+    const t = 1/(1+0.2316419*z);
+    const d = 0.3989423*Math.exp(-z*z/2);
+    const prob = d*t*(0.3193815 + t*(-0.3565638 + t*(1.781478 + t*(-1.821256 + t*1.330274))));
+    return 1 - prob;
+  }
+
+  // p-value aproximado para t (duas caudas) usando aproximação normal quando df>=30
+  function approxTPValue(t, df){
+    const at = Math.abs(t);
+    if(df>=30){
+      return 2*(1-phi(at));
+    }
+    // Aproximação conservadora: usa normal mesmo para df menores (ensino)
+    return 2*(1-phi(at));
+  }
+
+  // p-value aproximado para F usando transformação log e normal (bem aproximado)
+  function approxFPValue(F, d1, d2){
+    if(!isFinite(F) || F<=0) return NaN;
+    // Wilson-Hilferty approx: transforma qui-quadrado, aqui só uma aproximação didática
+    // Como fallback: p pequeno se F muito alto; vamos aproximar via normal do log(F)
+    const z = (Math.log(F)) * Math.sqrt((d2-2)/2);
+    const p = 1-phi(z);
+    return Math.max(0, Math.min(1,p));
+  }
+
+  // p-value qui-quadrado aproximado via normal (Wilson-Hilferty)
+  function approxChiSqPValue(x, k){
+    if(!isFinite(x) || x<0) return NaN;
+    if(k<=0) return NaN;
+    const z = (Math.pow(x/k, 1/3) - (1 - 2/(9*k))) / Math.sqrt(2/(9*k));
+    const p = 1-phi(z);
+    return Math.max(0, Math.min(1,p));
+  }
+
+  // --------------------------
+  // Parser de dados
+  // --------------------------
+  function parseText(text){
+    const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    const rows = [];
+    for(const line of lines){
+      const parts = line.split(/[\t,;]+/).map(s=>s.trim());
+      // Formatos aceitos:
+      // 2 colunas: grupo, valor
+      // 3 colunas: grupo, x, y (para scatter/reg)
+      // 4 colunas: grupo, x, y, tamanho (bubble)
+      if(parts.length<2) continue;
+      const group = parts[0] || "Série";
+      const n1 = toNum(parts[1]);
+      const n2 = parts.length>=3 ? toNum(parts[2]) : NaN;
+      const n3 = parts.length>=4 ? toNum(parts[3]) : NaN;
+
+      // Se só 2 colunas: group,value
+      if(parts.length===2){
+        rows.push({group, x: NaN, y: n1, size: NaN});
+      } else if(parts.length===3){
+        // group, x, y
+        rows.push({group, x: n1, y: n2, size: NaN});
+      } else {
+        rows.push({group, x: n1, y: n2, size: n3});
+      }
+    }
+    return rows.filter(r=>Number.isFinite(r.y));
+  }
+
+  function toNum(s){
+    if(s===null || s===undefined) return NaN;
+    const v = String(s).replace(/\./g,'').replace(',','.');
+    // cuidado: acima quebra 1.234,56 -> 1234.56 (bom) mas 23.1 vira 231.
+    // Então: se tem vírgula, remove pontos milhar; se não tem vírgula, mantém ponto decimal
+    const hasComma = String(s).includes(',');
+    if(hasComma){
+      const vv = String(s).replace(/\./g,'').replace(',','.');
+      return Number(vv);
+    }
+    return Number(String(s));
+  }
+
+  function groupBy(rows){
+    const g = {};
+    for(const r of rows){
+      const k = r.group || "Série";
+      if(!g[k]) g[k]=[];
+      g[k].push(r);
+    }
+    return g;
+  }
+
+  // --------------------------
+  // Gráficos
+  // --------------------------
+  let chart=null;
+
+  function destroyChart(){
+    if(chart){ chart.destroy(); chart=null; }
+  }
+
+  function brightColors(i){
+    const palette = ["#ff006e","#3a86ff","#8338ec","#06d6a0","#ffbe0b","#fb5607","#00b4d8","#9b5de5","#f15bb5","#00f5d4"];
+    return palette[i % palette.length];
+  }
+
+  function makeHistogram(values, bins=10){
+    const minV=Math.min(...values), maxV=Math.max(...values);
+    if(minV===maxV){
+      return {labels:[String(minV)], counts:[values.length]};
+    }
+    const width = (maxV-minV)/bins;
+    const counts = Array(bins).fill(0);
+    for(const v of values){
+      let idx = Math.floor((v-minV)/width);
+      if(idx===bins) idx=bins-1;
+      counts[idx]++;
+    }
+    const labels = counts.map((_,i)=>{
+      const a = minV + i*width;
+      const b = a + width;
+      return `${a.toFixed(2)}–${b.toFixed(2)}`;
+    });
+    return {labels, counts};
+  }
+
+  function renderChart(rows, chartType, varLabel){
+    destroyChart();
+    const ctx=document.getElementById('chart');
+
+    const byG = groupBy(rows);
+    const keys = Object.keys(byG);
+    const explain = document.getElementById('chartExplain');
+
+    if(chartType==="hist"){
+      const values = rows.map(r=>r.y);
+      const {labels, counts} = makeHistogram(values, 10);
+      chart = new Chart(ctx, {
+        type:"bar",
+        data:{
+          labels,
+          datasets:[{
+            label:`Histograma – ${varLabel || "Valor"}`,
+            data:counts,
+            backgroundColor: labels.map((_,i)=>brightColors(i))
+          }]
+        },
+        options:{responsive:true, plugins:{legend:{display:true}}}
+      });
+      explain.innerHTML = `
+        <strong>Como ler o histograma:</strong> cada barra mostra quantas observações caíram em uma faixa de valores.
+        <br/>Use para enxergar a forma da distribuição (simétrica, assimétrica, presença de extremos).
+      `;
+      return;
+    }
+
+    if(chartType==="boxplot"){
+      // boxplot por grupo
+      const datasets = keys.map((k,i)=>({
+        label:k,
+        data:[byG[k].map(r=>r.y)],
+        backgroundColor: brightColors(i) + "33",
+        borderColor: brightColors(i),
+        borderWidth: 2
+      }));
+      chart = new Chart(ctx, {
+        type:"boxplot",
+        data:{
+          labels:[""],
+          datasets
+        },
+        options:{
+          responsive:true,
+          plugins:{legend:{position:"bottom"}}
+        }
+      });
+      explain.innerHTML = `
+        <strong>Como ler o boxplot:</strong> a caixa representa o intervalo entre Q1 e Q3 (50% central dos dados).
+        A linha no meio é a mediana. Pontos fora indicam valores extremos (outliers).
+        <br/>Excelente para comparar grupos rapidamente.
+      `;
+      return;
+    }
+
+    if(chartType==="scatter" || chartType==="bubble"){
+      // precisa de x e y
+      const hasX = rows.some(r=>Number.isFinite(r.x));
+      if(!hasX){
+        explain.innerHTML = `<strong>Este gráfico precisa de X.</strong> Use 3 colunas: Grupo, X, Y.`;
+        chart = new Chart(ctx, { type:"scatter", data:{datasets:[]}, options:{responsive:true} });
+        return;
+      }
+      const datasets = keys.map((k,i)=>{
+        const pts = byG[k].filter(r=>Number.isFinite(r.x)).map(r=>{
+          if(chartType==="bubble"){
+            return {x:r.x, y:r.y, r: Number.isFinite(r.size)? Math.max(3, Math.min(18, r.size)) : 6};
+          }
+          return {x:r.x, y:r.y};
+        });
+        return {
+          label:k,
+          data:pts,
+          backgroundColor: brightColors(i) + (chartType==="bubble" ? "88" : "cc"),
+          borderColor: brightColors(i)
+        };
+      });
+      chart = new Chart(ctx, {
+        type: chartType==="bubble" ? "bubble" : "scatter",
+        data:{datasets},
+        options:{
+          responsive:true,
+          plugins:{legend:{position:"bottom"}},
+          scales:{
+            x:{title:{display:true,text:"X"}},
+            y:{title:{display:true,text: varLabel || "Y"}}
+          }
+        }
+      });
+      explain.innerHTML = `
+        <strong>Como ler a dispersão:</strong> cada ponto é uma observação (X,Y).
+        <br/>Use para ver tendência (subindo/descendo), agrupamentos e valores extremos.
+        ${chartType==="bubble" ? "<br/><strong>No gráfico de bolhas</strong>, o tamanho representa uma terceira variável." : ""}
+      `;
+      return;
+    }
+
+    // Para bar/line/area/radar/pie/doughnut: agregamos por grupo (média)
+    const means = keys.map(k=>mean(byG[k].map(r=>r.y)));
+    const labelBase = varLabel || "Valor";
+
+    const type = chartType==="area" ? "line" : chartType;
+
+    const dataset = {
+      label:`Média por grupo – ${labelBase}`,
+      data:means,
+      backgroundColor: keys.map((_,i)=> brightColors(i) + (type==="line" ? "33" : "cc")),
+      borderColor: keys.map((_,i)=> brightColors(i)),
+      borderWidth: 2,
+      fill: chartType==="area"
+    };
+
+    chart = new Chart(ctx, {
+      type,
+      data:{ labels: keys, datasets:[dataset] },
+      options:{
+        responsive:true,
+        plugins:{legend:{display: type!=="pie" && type!=="doughnut"}},
+        scales: (type==="pie" || type==="doughnut" || type==="radar") ? {} : {
+          y:{title:{display:true,text: labelBase}}
+        }
+      }
+    });
+
+    const explainText = {
+      bar: "Colunas: ótimo para comparar médias (ou totais) entre grupos.",
+      line: "Linha: bom para ver variação ao longo de uma sequência (se seus grupos forem ordem temporal).",
+      area: "Área: semelhante ao gráfico de linha, com preenchimento para destacar magnitude.",
+      radar:"Radar: útil para comparar perfis entre categorias (interprete com cuidado).",
+      pie:"Pizza: mostra proporção; evite quando há muitos grupos.",
+      doughnut:"Rosca: igual à pizza, mas com melhor leitura do centro."
+    }[chartType] || "";
+
+    explain.innerHTML = `<strong>Como ler:</strong> ${explainText} <br/>Aqui, a plataforma está usando <strong>a média de Y por grupo</strong>.`;
+  }
+
+  // --------------------------
+  // Estatística e relatórios
+  // --------------------------
+  function formatNum(x){
+    if(!isFinite(x)) return "NA";
+    const ax=Math.abs(x);
+    if(ax>=1000) return x.toFixed(2);
+    if(ax>=10) return x.toFixed(3);
+    return x.toFixed(4);
+  }
+
+  function summarize(rows){
+    const y = rows.map(r=>r.y);
+    const byG = groupBy(rows);
+    const keys = Object.keys(byG);
+
+    const {JB, p} = jarqueBera(y);
+
+    const lines = [];
+    lines.push(`Identificação: ${document.getElementById('studentName').value || "—"}`);
+    lines.push(`Variável: ${document.getElementById('varName').value || "—"}`);
+    lines.push("");
+    lines.push(`Resumo geral (todos os dados):`);
+    lines.push(`N = ${y.length}`);
+    lines.push(`Média = ${formatNum(mean(y))}`);
+    lines.push(`Mediana = ${formatNum(median(y))}`);
+    lines.push(`DP (amostral) = ${formatNum(sd(y,true))}`);
+    lines.push(`Mínimo = ${formatNum(Math.min(...y))}`);
+    lines.push(`Q1 = ${formatNum(quantile(y,0.25))}`);
+    lines.push(`Q3 = ${formatNum(quantile(y,0.75))}`);
+    lines.push(`Máximo = ${formatNum(Math.max(...y))}`);
+    lines.push("");
+    lines.push(`Normalidade (Jarque–Bera, aproximação): JB = ${formatNum(JB)} | p ≈ ${formatNum(p)}`);
+    if(isFinite(p)){
+      lines.push(p>=0.05 ? `Interpretação: não há evidência forte contra normalidade (p≥0,05).` :
+                           `Interpretação: possível não-normalidade (p<0,05). Considere testes não paramétricos e/ou transformação.`);
+    } else {
+      lines.push("Interpretação: amostra pequena para checar normalidade com segurança.");
+    }
+
+    lines.push("");
+    lines.push(`Resumo por grupo:`);
+    keys.forEach(k=>{
+      const arr = byG[k].map(r=>r.y);
+      lines.push(`- ${k}: n=${arr.length}, média=${formatNum(mean(arr))}, mediana=${formatNum(median(arr))}, DP=${formatNum(sd(arr,true))}`);
+    });
+
+    return {text: lines.join("\n"), jb:{JB,p}, keys, byG};
+  }
+
+  function runAnalysis(rows){
+    const analysisType = document.getElementById('analysisType').value;
+    const corrMethod = document.getElementById('corrMethod').value;
+    const byG = groupBy(rows);
+    const keys = Object.keys(byG);
+
+    const yAll = rows.map(r=>r.y);
+    const jb = jarqueBera(yAll);
+
+    const parts = [];
+    const base = summarize(rows);
+    parts.push(base.text);
+    parts.push("");
+
+    function needTwoGroups(){
+      if(keys.length !== 2){
+        parts.push(`Aviso: esta análise exige exatamente 2 grupos. Grupos encontrados: ${keys.length}.`);
+        return false;
+      }
+      return true;
+    }
+    function needAtLeastTwoGroups(){
+      if(keys.length < 2){
+        parts.push(`Aviso: esta análise exige pelo menos 2 grupos.`);
+        return false;
+      }
+      return true;
+    }
+
+    if(analysisType==="desc"){
+      parts.push("Análise escolhida: Descritiva.");
+    }
+
+    if(analysisType==="t"){
+      if(needTwoGroups()){
+        const a = byG[keys[0]].map(r=>r.y);
+        const b = byG[keys[1]].map(r=>r.y);
+        const out = tTest2(a,b);
+        if(out){
+          parts.push(`Análise escolhida: Teste t (independente, didático).`);
+          parts.push(`Grupo 1 (${keys[0]}): média=${formatNum(out.m1)} | n=${a.length}`);
+          parts.push(`Grupo 2 (${keys[1]}): média=${formatNum(out.m2)} | n=${b.length}`);
+          parts.push(`t = ${formatNum(out.t)} | gl = ${out.df} | p ≈ ${formatNum(out.p)}`);
+          parts.push(out.p < 0.05 ? "Interpretação: diferença estatisticamente detectável (p<0,05)." :
+                                   "Interpretação: não foi detectada diferença (p≥0,05).");
+        }
+      }
+    }
+
+    if(analysisType==="anova"){
+      if(needAtLeastTwoGroups()){
+        const g = {};
+        keys.forEach(k=>g[k]=byG[k].map(r=>r.y));
+        const out = anovaOneWay(g);
+        if(out){
+          parts.push(`Análise escolhida: ANOVA (1 fator).`);
+          parts.push(`F = ${formatNum(out.F)} | gl = (${out.dfb}, ${out.dfw}) | p ≈ ${formatNum(out.p)}`);
+          parts.push(out.p < 0.05 ? "Interpretação: pelo menos um grupo difere (p<0,05). Considere pós-teste no PAST4/R."
+                                  : "Interpretação: não há evidência de diferença entre médias (p≥0,05).");
+        }
+      }
+    }
+
+    if(analysisType==="mw"){
+      if(needTwoGroups()){
+        const a = byG[keys[0]].map(r=>r.y);
+        const b = byG[keys[1]].map(r=>r.y);
+        const out = mannWhitney(a,b);
+        if(out){
+          parts.push(`Análise escolhida: Mann–Whitney (não paramétrico, 2 grupos).`);
+          parts.push(`U = ${formatNum(out.U)} | z ≈ ${formatNum(out.z)} | p ≈ ${formatNum(out.p)}`);
+          parts.push(out.p < 0.05 ? "Interpretação: diferença detectável entre distribuições (p<0,05)."
+                                  : "Interpretação: não foi detectada diferença (p≥0,05).");
+        }
+      }
+    }
+
+    if(analysisType==="kw"){
+      if(needAtLeastTwoGroups()){
+        const g = {};
+        keys.forEach(k=>g[k]=byG[k].map(r=>r.y));
+        const out = kruskalWallis(g);
+        if(out){
+          parts.push(`Análise escolhida: Kruskal–Wallis (não paramétrico, k grupos).`);
+          parts.push(`H = ${formatNum(out.H)} | gl = ${out.df} | p ≈ ${formatNum(out.p)}`);
+          parts.push(out.p < 0.05 ? "Interpretação: pelo menos um grupo difere (p<0,05)."
+                                  : "Interpretação: não há evidência de diferença (p≥0,05).");
+        }
+      }
+    }
+
+    if(analysisType==="corr"){
+      // precisa de x e y
+      const xs = rows.filter(r=>Number.isFinite(r.x)).map(r=>r.x);
+      const ys = rows.filter(r=>Number.isFinite(r.x)).map(r=>r.y);
+      if(xs.length<3){
+        parts.push("Aviso: correlação exige dados com X. Use 3 colunas: Grupo, X, Y.");
+      } else {
+        const out = (corrMethod==="spearman") ? spearman(xs,ys) : pearson(xs,ys);
+        parts.push(`Análise escolhida: Correlação (${corrMethod}).`);
+        parts.push(`r = ${formatNum(out.r)} | p ≈ ${formatNum(out.p)}`);
+        parts.push("Interpretação: r perto de 1/-1 sugere associação forte; r perto de 0 sugere associação fraca.");
+      }
+    }
+
+    if(analysisType==="reg"){
+      const xs = rows.filter(r=>Number.isFinite(r.x)).map(r=>r.x);
+      const ys = rows.filter(r=>Number.isFinite(r.x)).map(r=>r.y);
+      if(xs.length<3){
+        parts.push("Aviso: regressão exige dados com X. Use 3 colunas: Grupo, X, Y.");
+      } else {
+        const out = linReg(xs,ys);
+        if(out){
+          parts.push(`Análise escolhida: Regressão linear (Y ~ X).`);
+          parts.push(`Equação: Y = ${formatNum(out.b0)} + ${formatNum(out.b1)}·X`);
+          parts.push(`R² = ${formatNum(out.r2)} | t(b1) = ${formatNum(out.t)} | p ≈ ${formatNum(out.p)}`);
+          parts.push(out.p < 0.05 ? "Interpretação: inclinação diferente de zero (p<0,05), sugerindo tendência linear."
+                                  : "Interpretação: não há evidência forte de tendência linear (p≥0,05).");
+        }
+      }
+    }
+
+    // Atualiza KPIs
+    document.getElementById('kN').textContent = rows.length;
+    document.getElementById('kG').textContent = Object.keys(byG).length;
+    document.getElementById('kJB').textContent = isFinite(jb.p) ? `p≈${formatNum(jb.p)}` : "NA";
+    document.getElementById('kJBNote').textContent =
+      isFinite(jb.p) ? (jb.p>=0.05 ? "Sugere dados mais compatíveis com normalidade (didático)." : "Sugere não-normalidade (didático).")
+                     : "Amostra pequena.";
+
+    const hint = document.getElementById('autoHint');
+    if(isFinite(jb.p)){
+      hint.innerHTML = jb.p>=0.05
+        ? "<strong>Sugestão:</strong> você pode tentar testes paramétricos (t/ANOVA) se as premissas fizerem sentido."
+        : "<strong>Sugestão:</strong> considere testes não paramétricos (Mann–Whitney/Kruskal–Wallis) e use boxplot/histograma.";
+    }
+
+    return parts.join("\n");
+  }
+
+  // --------------------------
+  // Export
+  // --------------------------
+  function exportCSV(rows){
+    // Exporta sempre 4 colunas (Grupo,X,Y,Tamanho)
+    const head = "Grupo,X,Y,Tamanho\n";
+    const body = rows.map(r=>{
+      const x = Number.isFinite(r.x)? r.x : "";
+      const s = Number.isFinite(r.size)? r.size : "";
+      return `${r.group},${x},${r.y},${s}`;
+    }).join("\n");
+    downloadText("dados.csv", head+body, "text/csv");
+  }
+
+  function exportJSON(rows, resultText){
+    const payload = {
+      studentName: document.getElementById('studentName').value || null,
+      variable: document.getElementById('varName').value || null,
+      chartType: document.getElementById('chartType').value,
+      analysisType: document.getElementById('analysisType').value,
+      corrMethod: document.getElementById('corrMethod').value,
+      rows,
+      result: resultText,
+      exportedAt: new Date().toISOString()
+    };
+    downloadText("dossie.json", JSON.stringify(payload,null,2), "application/json");
+  }
+
+  function downloadText(filename, text, mime){
+    const blob = new Blob([text], {type: mime});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+  }
+
+  // --------------------------
+  // LocalStorage
+  // --------------------------
+  function saveLocal(){
+    const state = {
+      studentName: document.getElementById('studentName').value,
+      varName: document.getElementById('varName').value,
+      dataInput: document.getElementById('dataInput').value,
+      chartType: document.getElementById('chartType').value,
+      analysisType: document.getElementById('analysisType').value,
+      corrMethod: document.getElementById('corrMethod').value
+    };
+    localStorage.setItem("dossie_state_v1", JSON.stringify(state));
+  }
+  function loadLocal(){
+    const raw = localStorage.getItem("dossie_state_v1");
+    if(!raw) return false;
+    const s = JSON.parse(raw);
+    document.getElementById('studentName').value = s.studentName || "";
+    document.getElementById('varName').value = s.varName || "";
+    document.getElementById('dataInput').value = s.dataInput || "";
+    document.getElementById('chartType').value = s.chartType || "bar";
+    document.getElementById('analysisType').value = s.analysisType || "desc";
+    document.getElementById('corrMethod').value = s.corrMethod || "pearson";
+    return true;
+  }
+
+  // --------------------------
+  // UI
+  // --------------------------
+  function updateAll(){
+    const text = document.getElementById('dataInput').value;
+    const rows = parseText(text);
+    const varLabel = document.getElementById('varName').value || "Valor";
+    const chartType = document.getElementById('chartType').value;
+
+    if(rows.length<2){
+      document.getElementById('resultBox').textContent = "Cole seus dados (mínimo 2 linhas) e clique em Atualizar.";
+      destroyChart();
+      return;
+    }
+
+    renderChart(rows, chartType, varLabel);
+    const res = runAnalysis(rows);
+    document.getElementById('resultBox').textContent = res;
+
+    // guarda última execução para export
+    window.__lastRows = rows;
+    window.__lastResult = res;
+  }
+
+  function setDemo(){
+    document.getElementById('studentName').value = "Exemplo – Semana 02";
+    document.getElementById('varName').value = "Temperatura (°C)";
+    document.getElementById('dataInput').value =
+`CasaA, 27.1
+CasaA, 28.4
+CasaA, 29.0
+CasaA, 27.9
+CasaB, 26.2
+CasaB, 25.9
+CasaB, 26.8
+CasaB, 26.0`;
+    document.getElementById('chartType').value = "boxplot";
+    document.getElementById('analysisType').value = "t";
+    updateAll();
+  }
+
+  // CSV import
+  document.getElementById('csvFile').addEventListener('change', async (e)=>{
+    const file = e.target.files?.[0];
+    if(!file) return;
+    const text = await file.text();
+    // Aceita ; ou , como separador
+    const lines = text.split(/\r?\n/).filter(Boolean);
+    const out = [];
+    for(let i=0;i<lines.length;i++){
+      const line = lines[i].trim();
+      if(!line) continue;
+      // pula cabeçalho se detectar letras
+      if(i===0 && /[A-Za-zÀ-ÿ]/.test(line) && /grupo|group/i.test(line)) continue;
+      const parts = line.split(/[;,]/).map(s=>s.trim());
+      if(parts.length<2) continue;
+      // monta no formato texto da caixa (grupo, valor) ou (grupo,x,y,size)
+      out.push(parts.join(", "));
+    }
+    document.getElementById('dataInput').value = out.join("\n");
+    updateAll();
+  });
+
+  // Botões
+  document.getElementById('btnUpdate').addEventListener('click', updateAll);
+  document.getElementById('btnDemo').addEventListener('click', setDemo);
+  document.getElementById('btnSave').addEventListener('click', ()=>{ saveLocal(); alert("Salvo no navegador."); });
+  document.getElementById('btnLoad').addEventListener('click', ()=>{ if(loadLocal()) updateAll(); else alert("Nada salvo ainda."); });
+  document.getElementById('btnClear').addEventListener('click', ()=>{
+    document.getElementById('dataInput').value="";
+    destroyChart();
+    document.getElementById('resultBox').textContent="";
+  });
+
+  document.getElementById('btnExportCSV').addEventListener('click', ()=>{
+    if(!window.__lastRows) return alert("Nada para exportar. Clique em Atualizar primeiro.");
+    exportCSV(window.__lastRows);
+  });
+  document.getElementById('btnExportJSON').addEventListener('click', ()=>{
+    if(!window.__lastRows) return alert("Nada para exportar. Clique em Atualizar primeiro.");
+    exportJSON(window.__lastRows, window.__lastResult || "");
+  });
+
+  // Atualiza explicação quando muda o gráfico
+  document.getElementById('chartType').addEventListener('change', updateAll);
+  document.getElementById('analysisType').addEventListener('change', updateAll);
+  document.getElementById('corrMethod').addEventListener('change', updateAll);
+
+  // Inicial
+  loadLocal();
+  if(document.getElementById('dataInput').value.trim().length){
+    updateAll();
+  } else {
+    setDemo();
+  }
+</script>
+</body>
+</html>
