@@ -3,1170 +3,280 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dossiê Estatístico – Biologia & Saúde</title>
-
+  <title>Dossiê Estatístico – Biologia, Ecologia & Saúde</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@sgratzl/chartjs-chart-boxplot@4.4.3/build/index.umd.min.js"></script>
-
   <style>
-    :root{
-      --bg:#ffffff;
-      --text:#0b1220;
-      --muted:#475569;
-      --card:#ffffff;
-      --line:#e5e7eb;
-      --shadow: 0 10px 30px rgba(2,6,23,.08);
-
-      --c1:#ff006e;
-      --c2:#3a86ff;
-      --c3:#8338ec;
-      --c4:#06d6a0;
-      --c5:#ffbe0b;
-      --c6:#fb5607;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background:linear-gradient(180deg,#fff 0%, #fff 60%, #f8fafc 100%);
-      color:var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      line-height:1.35;
-    }
-    header{
-      padding:28px 16px 14px;
-      border-bottom:1px solid var(--line);
-      background:
-        radial-gradient(1200px 380px at 10% 0%, rgba(255,0,110,.10), transparent 60%),
-        radial-gradient(900px 340px at 70% 0%, rgba(58,134,255,.10), transparent 60%),
-        radial-gradient(900px 340px at 95% 20%, rgba(6,214,160,.10), transparent 60%),
-        #fff;
-    }
-    .wrap{max-width:1200px;margin:0 auto;padding:0 16px}
-    h1{margin:0 0 8px;font-size:28px;letter-spacing:-.02em}
-    .subtitle{margin:0 0 14px;color:var(--muted);max-width:900px}
-    .badges{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
-    .badge{
-      font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);
-      background:#fff;box-shadow: 0 4px 14px rgba(2,6,23,.04);color:#0f172a;
-    }
-    .grid{display:grid;grid-template-columns: 1.1fr .9fr;gap:14px;padding:16px 0 22px}
-    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:16px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-    .card h2{margin:0;padding:14px 14px 0;font-size:16px}
-    .card .body{padding:14px}
-    textarea{
-      width:100%;
-      min-height:190px;
-      resize:vertical;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size:12.5px;
-      outline:none;
-    }
-    textarea:focus{border-color:#94a3b8}
-    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
-    .row > div{flex:1;min-width:220px}
-    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
-    input[type="text"], select{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px 10px;
-      background:#fff;
-      color:var(--text);
-      outline:none;
-    }
-    input[type="file"]{width:100%}
-    .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-    button{
-      border:none;
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:800;
-      color:#0b1220;
-      background: #f1f5f9;
-      border:1px solid var(--line);
-    }
-    button.primary{background: linear-gradient(90deg, var(--c2), var(--c1));color:white;border:none;}
-    button.accent{background: linear-gradient(90deg, var(--c4), var(--c5));color:#0b1220;border:none;}
-    button.warn{background: linear-gradient(90deg, var(--c6), var(--c1));color:white;border:none;}
-    button.ghost{background:#fff;border:1px solid var(--line)}
-    .small{font-size:12px;color:var(--muted)}
-    .kpi{display:grid;grid-template-columns: repeat(3, 1fr);gap:10px}
-    @media (max-width: 560px){ .kpi{grid-template-columns:1fr} }
-    .kpi .box{border:1px solid var(--line);border-radius:14px;padding:10px;background:#fff}
-    .kpi .box .t{font-size:12px;color:var(--muted)}
-    .kpi .box .v{font-size:16px;font-weight:900;margin-top:4px}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;}
-    .hr{height:1px;background:var(--line);margin:12px 0}
-    .explain{
-      border:1px dashed rgba(58,134,255,.35);
-      background:rgba(58,134,255,.06);
-      border-radius:14px;
-      padding:10px;
-      color:#0b1220;
-    }
-    .warnbox{
-      border:1px dashed rgba(251,86,7,.45);
-      background:rgba(251,86,7,.08);
-      border-radius:14px;
-      padding:10px;
-      color:#0b1220;
-    }
-    .two{display:grid;grid-template-columns: 1fr 1fr;gap:12px}
-    @media (max-width: 980px){ .two{grid-template-columns:1fr} }
-    .log{
-      white-space:pre-wrap;
-      background:#0b1220;
-      color:#e2e8f0;
-      border-radius:14px;
-      padding:10px;
-      font-size:12px;
-      max-height:260px;
-      overflow:auto;
-    }
-    .footer{padding:18px 0 28px;color:var(--muted);font-size:12px}
-    .req{color:var(--c1);font-weight:900}
-    .checklist{display:grid;gap:6px}
-    .checklist label{display:flex;gap:8px;align-items:flex-start;color:#0b1220;font-size:13px;margin:0}
-    .checklist input{margin-top:2px}
+    :root{--bg:#fff;--surface:#f8f9fc;--text:#1a1a2e;--muted:#6b7280;--card:#fff;--line:#e2e5ef;--radius:20px;--pink:#ff2d78;--blue:#2563eb;--purple:#7c3aed;--teal:#0d9488;--amber:#f59e0b;--orange:#f97316;--cyan:#06b6d4;--lime:#84cc16;--rose:#f43f5e;--indigo:#4f46e5;--grad-hero:linear-gradient(135deg,#ff2d78 0%,#7c3aed 40%,#2563eb 70%,#0d9488 100%);--grad-btn:linear-gradient(135deg,#2563eb,#7c3aed);--grad-accent:linear-gradient(135deg,#0d9488,#06b6d4);--grad-warn:linear-gradient(135deg,#f97316,#f43f5e);--grad-export:linear-gradient(135deg,#7c3aed,#4f46e5);--shadow-sm:0 2px 8px rgba(0,0,0,.04);--shadow-md:0 8px 30px rgba(0,0,0,.08);--shadow-lg:0 16px 50px rgba(0,0,0,.12);--shadow-glow-blue:0 4px 20px rgba(37,99,235,.25);--shadow-glow-purple:0 4px 20px rgba(124,58,237,.25)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;line-height:1.5;overflow-x:hidden}
+    .modal-overlay{position:fixed;inset:0;background:rgba(26,26,46,.5);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+    .modal-overlay.active{opacity:1;pointer-events:all}
+    .modal-box{background:#fff;border-radius:var(--radius);padding:32px;max-width:520px;width:92%;box-shadow:var(--shadow-lg);transform:translateY(30px) scale(.95);transition:transform .35s cubic-bezier(.22,1,.36,1);text-align:center}
+    .modal-overlay.active .modal-box{transform:translateY(0) scale(1)}
+    .modal-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px}
+    .modal-icon.question{background:linear-gradient(135deg,rgba(37,99,235,.15),rgba(124,58,237,.15))}
+    .modal-icon.warning{background:linear-gradient(135deg,rgba(249,115,22,.15),rgba(244,63,94,.15))}
+    .modal-icon.success{background:linear-gradient(135deg,rgba(13,148,136,.15),rgba(132,204,22,.15))}
+    .modal-icon.info{background:linear-gradient(135deg,rgba(79,70,229,.15),rgba(6,182,212,.15))}
+    .modal-title{font-size:20px;font-weight:700;margin-bottom:8px}
+    .modal-text{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:20px}.modal-text strong{color:var(--text)}
+    .modal-input{width:100%;border:2px solid var(--line);border-radius:14px;padding:12px 16px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;margin-bottom:16px;transition:border-color .2s}.modal-input:focus{border-color:var(--blue)}
+    .modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .modal-btn{border:none;padding:12px 24px;border-radius:14px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:transform .15s}.modal-btn:hover{transform:translateY(-1px)}
+    .modal-btn.primary{background:var(--grad-btn);color:#fff;box-shadow:var(--shadow-glow-blue)}.modal-btn.secondary{background:var(--surface);color:var(--text);border:1px solid var(--line)}.modal-btn.danger{background:var(--grad-warn);color:#fff}
+    .toast-container{position:fixed;top:24px;right:24px;z-index:10000;display:flex;flex-direction:column;gap:10px}
+    .toast{background:#fff;border-radius:16px;padding:14px 20px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:12px;font-size:14px;font-weight:500;animation:toastIn .4s cubic-bezier(.22,1,.36,1);border-left:4px solid var(--blue);max-width:400px}
+    .toast.success{border-left-color:var(--teal)}.toast.warning{border-left-color:var(--amber)}.toast.error{border-left-color:var(--rose)}.toast.info{border-left-color:var(--indigo)}
+    .toast .toast-icon{font-size:20px;flex-shrink:0}.toast.fade-out{animation:toastOut .3s ease forwards}
+    @keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+    @keyframes toastOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(40px)}}
+    .hero{position:relative;padding:48px 24px 40px;overflow:hidden}.hero::before{content:'';position:absolute;inset:0;background:var(--grad-hero);opacity:.06}.hero::after{content:'';position:absolute;top:-120px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(124,58,237,.12),transparent 70%);border-radius:50%}
+    .hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(124,58,237,.1);color:var(--purple);font-size:12px;font-weight:600;padding:6px 14px;border-radius:999px;margin-bottom:16px;letter-spacing:.5px;text-transform:uppercase}
+    .hero h1{font-size:clamp(28px,5vw,42px);font-weight:900;letter-spacing:-.03em;line-height:1.15;margin-bottom:12px}
+    .hero h1 .gradient-text{background:var(--grad-hero);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-sub{font-size:16px;color:var(--muted);max-width:650px;line-height:1.6}
+    .hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+    .hero-tag{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:500;border:1px solid var(--line);background:#fff;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s}.hero-tag:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+    .hero-tag .tag-dot{width:8px;height:8px;border-radius:50%}
+    .student-banner{display:none;max-width:900px;margin:0 auto;padding:0 24px}.student-banner.visible{display:block}
+    .student-banner-inner{background:linear-gradient(135deg,rgba(37,99,235,.06),rgba(124,58,237,.06));border:1px solid rgba(37,99,235,.15);border-radius:var(--radius);padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .student-avatar{width:48px;height:48px;border-radius:50%;background:var(--grad-btn);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;flex-shrink:0;box-shadow:var(--shadow-glow-blue)}
+    .student-info{flex:1;min-width:200px}.student-name{font-size:16px;font-weight:700}.student-question{font-size:13px;color:var(--muted);margin-top:2px}
+    .student-stats{display:flex;gap:16px;flex-wrap:wrap}.student-stat{text-align:center}
+    .student-stat-val{font-size:18px;font-weight:800;background:var(--grad-hero);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .student-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+    .main-wrap{max-width:900px;margin:0 auto;padding:24px}
+    .stepper{display:flex;gap:4px;margin-bottom:28px;overflow-x:auto;padding-bottom:4px}
+    .step-item{flex:1;min-width:70px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:12px 6px;border-radius:14px;transition:background .2s}.step-item:hover{background:var(--surface)}
+    .step-item.active .step-num{background:var(--grad-btn);color:#fff;box-shadow:var(--shadow-glow-blue)}.step-item.done .step-num{background:var(--teal);color:#fff}
+    .step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;background:var(--surface);border:2px solid var(--line);transition:all .3s}
+    .step-label{font-size:11px;font-weight:600;color:var(--muted);text-align:center}.step-item.active .step-label{color:var(--blue)}.step-item.done .step-label{color:var(--teal)}
+    .section{display:none;animation:fadeUp .4s cubic-bezier(.22,1,.36,1)}.section.active{display:block}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-md);overflow:hidden;margin-bottom:20px}
+    .card-header{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+    .card-header-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+    .card-header h2{font-size:18px;font-weight:700}.card-header .card-hint{font-size:13px;color:var(--muted);margin-top:2px}
+    .card-body{padding:24px}
+    .form-group{margin-bottom:18px}.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}.form-group label .req{color:var(--pink)}.form-group .hint{font-size:12px;color:var(--muted);margin-top:4px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:640px){.form-row{grid-template-columns:1fr}}
+    input[type="text"],select,textarea{width:100%;border:2px solid var(--line);border-radius:14px;padding:12px 16px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+    input[type="text"]:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(37,99,235,.08)}
+    textarea{font-family:'JetBrains Mono',monospace;font-size:13px;min-height:200px;resize:vertical;line-height:1.6}
+    select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+    input[type="file"]{font-family:'Outfit',sans-serif;font-size:13px;padding:10px;border:2px dashed var(--line);border-radius:14px;width:100%;cursor:pointer}
+    .checklist-card{background:linear-gradient(135deg,rgba(249,115,22,.04),rgba(244,63,94,.04));border:1px solid rgba(249,115,22,.2);border-radius:16px;padding:20px}
+    .checklist-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+    .checklist-items{display:grid;gap:10px}
+    .check-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:12px;background:#fff;border:1px solid var(--line);cursor:pointer;transition:all .2s}.check-item:hover{border-color:var(--teal)}.check-item.checked{border-color:var(--teal);background:rgba(13,148,136,.06)}
+    .check-item input[type="checkbox"]{width:20px;height:20px;accent-color:var(--teal);margin-top:1px;flex-shrink:0;cursor:pointer}.check-item span{font-size:13px;line-height:1.5}
+    .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .btn{border:none;padding:12px 22px;border-radius:14px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s;position:relative;overflow:hidden}
+    .btn::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,.15));opacity:0;transition:opacity .2s}.btn:hover::after{opacity:1}.btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(0)}
+    .btn-primary{background:var(--grad-btn);color:#fff;box-shadow:var(--shadow-glow-blue)}
+    .btn-accent{background:var(--grad-accent);color:#fff;box-shadow:0 4px 16px rgba(13,148,136,.25)}
+    .btn-warn{background:var(--grad-warn);color:#fff}.btn-export{background:var(--grad-export);color:#fff;box-shadow:var(--shadow-glow-purple)}
+    .btn-ghost{background:#fff;color:var(--text);border:1.5px solid var(--line);box-shadow:var(--shadow-sm)}.btn-ghost:hover{border-color:var(--blue)}
+    .btn-sm{padding:9px 16px;font-size:13px;border-radius:12px}
+    .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}@media(max-width:640px){.kpi-grid{grid-template-columns:1fr}}
+    .kpi-card{border:1px solid var(--line);border-radius:16px;padding:16px 18px;background:#fff;position:relative;overflow:hidden}
+    .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}.kpi-card:nth-child(1)::before{background:var(--grad-btn)}.kpi-card:nth-child(2)::before{background:var(--grad-accent)}.kpi-card:nth-child(3)::before{background:var(--grad-warn)}
+    .kpi-label{font-size:12px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px}.kpi-value{font-size:22px;font-weight:800;margin-top:4px}.kpi-note{font-size:11px;color:var(--muted);margin-top:4px}
+    .result-log{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.7;white-space:pre-wrap;max-height:360px;overflow-y:auto;color:var(--text)}
+    .premise-grid{display:grid;gap:14px;margin-bottom:20px}
+    .premise-card{border:1px solid var(--line);border-radius:16px;padding:18px 20px;background:#fff;position:relative;overflow:hidden}
+    .premise-card::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;border-radius:5px 0 0 5px}
+    .premise-card.pass::before{background:var(--teal)}.premise-card.fail::before{background:var(--rose)}.premise-card.warn::before{background:var(--amber)}.premise-card.na::before{background:var(--line)}
+    .premise-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}.premise-icon{font-size:22px}.premise-title{font-size:15px;font-weight:700}
+    .premise-status{margin-left:auto;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px}
+    .premise-card.pass .premise-status{background:rgba(13,148,136,.1);color:var(--teal)}.premise-card.fail .premise-status{background:rgba(244,63,94,.1);color:var(--rose)}.premise-card.warn .premise-status{background:rgba(245,158,11,.1);color:var(--amber)}.premise-card.na .premise-status{background:var(--surface);color:var(--muted)}
+    .premise-detail{font-size:13px;color:var(--muted);line-height:1.6}.premise-detail strong{color:var(--text)}.premise-detail code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--surface);padding:2px 6px;border-radius:6px}
+    .reco-box{border-radius:16px;padding:20px 24px;margin-bottom:20px}
+    .reco-box.parametric{background:linear-gradient(135deg,rgba(37,99,235,.06),rgba(13,148,136,.06));border:1px solid rgba(37,99,235,.2)}
+    .reco-box.nonparametric{background:linear-gradient(135deg,rgba(249,115,22,.06),rgba(244,63,94,.06));border:1px solid rgba(249,115,22,.2)}
+    .reco-box.descriptive{background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(6,182,212,.06));border:1px solid rgba(124,58,237,.2)}
+    .reco-title{font-size:16px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+    .reco-text{font-size:13px;line-height:1.6;color:var(--text)}.reco-text strong{font-weight:700}
+    .suggestion-box{background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border:1px solid rgba(37,99,235,.15);border-radius:16px;padding:16px 20px;margin-bottom:16px}.suggestion-box strong{color:var(--blue)}.suggestion-box .sugg-text{font-size:13px;color:var(--text);line-height:1.6}
+    .chart-wrapper{background:#fff;border-radius:16px;padding:20px;border:1px solid var(--line);margin-bottom:16px}
+    .chart-explain{background:linear-gradient(135deg,rgba(124,58,237,.05),rgba(6,182,212,.05));border:1px solid rgba(124,58,237,.15);border-radius:14px;padding:14px 18px;font-size:13px;line-height:1.6;margin-top:16px}
+    .progress-section{display:flex;align-items:center;gap:20px;padding:16px 20px;background:linear-gradient(135deg,rgba(13,148,136,.04),rgba(132,204,22,.04));border:1px solid rgba(13,148,136,.15);border-radius:16px;margin-bottom:20px}
+    .progress-ring-wrap{position:relative;width:64px;height:64px;flex-shrink:0}.progress-ring-wrap svg{transform:rotate(-90deg)}
+    .progress-ring-bg{stroke:var(--line)}.progress-ring-fill{stroke:var(--teal);stroke-linecap:round;transition:stroke-dashoffset .6s ease}
+    .progress-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:var(--teal)}
+    .progress-info{flex:1}.progress-title{font-size:15px;font-weight:700}.progress-detail{font-size:13px;color:var(--muted);margin-top:2px}
+    .nav-btns{display:flex;justify-content:space-between;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+    .footer{text-align:center;padding:24px;color:var(--muted);font-size:12px}.footer a{color:var(--purple);text-decoration:none}
+    .confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:99999}
+    @media(max-width:640px){.hero{padding:32px 16px}.main-wrap{padding:16px}.card-body{padding:16px}.stepper{gap:0}.student-banner-inner{flex-direction:column;align-items:flex-start}}
   </style>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <h1>Dossiê Estatístico – Biologia, Ecologia e Saúde</h1>
-    <p class="subtitle">
-      Cole seus dados, gere gráficos, rode análises e escreva uma interpretação curta. A atividade principal da semana começa pela pergunta científica.
-    </p>
-    <div class="badges">
-      <span class="badge">Pergunta científica semanal</span>
-      <span class="badge">Réplicas e padronização</span>
-      <span class="badge">Gráficos e testes</span>
-      <span class="badge">Exporta PNG/CSV/JSON</span>
-    </div>
-  </div>
-</header>
-
-<main class="wrap">
-  <div class="grid">
-    <section class="card">
-      <h2>1) Planejamento da semana</h2>
-      <div class="body">
-        <div class="row">
-          <div>
-            <label>Identificação</label>
-            <input id="studentName" type="text" placeholder="Ex.: Maria Silva – Semana 03" />
-          </div>
-          <div>
-            <label>Variável principal (Y)</label>
-            <input id="varName" type="text" placeholder="Ex.: Temperatura (°C), Passos, Horas de sono" />
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <div>
-            <label>Pergunta científica da semana <span class="req">*</span></label>
-            <input id="qSci" type="text" placeholder="Ex.: A chuva aumenta o número de mosquitos observados à noite?" />
-            <div class="small">Obrigatório: precisa ter relação entre variável(is) e um contexto biológico/ecológico/saúde.</div>
-          </div>
-          <div>
-            <label>O que você quer resolver esta semana? (opcional)</label>
-            <input id="qSolve" type="text" placeholder="Ex.: Quero comparar dois bairros; quero entender se existe tendência ao longo dos dias." />
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <div class="warnbox" id="replicaBox">
-          <strong>Réplicas e qualidade do dado</strong><br/>
-          Uma análise estatística confiável precisa de repetição (réplicas) e padronização.
-          Use o checklist abaixo antes de concluir o dossiê.
-          <div class="hr"></div>
-          <div class="checklist">
-            <label><input type="checkbox" id="ckRep" /> Tenho réplicas (mais de 1 medida) para cada grupo/condição.</label>
-            <label><input type="checkbox" id="ckPad" /> Registrei sempre do mesmo jeito (mesma regra de coleta e unidade).</label>
-            <label><input type="checkbox" id="ckInd" /> As observações são independentes (não contei o mesmo evento como se fosse novo).</label>
-            <label><input type="checkbox" id="ckTime" /> Se existe horário/dia, eu mantive o padrão (ou registrei X para controlar isso).</label>
-          </div>
-          <div class="hr"></div>
-          <div class="small" id="replicaHint">Dica: tente ter pelo menos 5 a 10 observações no total. Para comparar grupos, tente pelo menos 3 por grupo.</div>
-        </div>
-
-        <div class="hr"></div>
-
-        <h2 style="padding:0;margin:0 0 10px;font-size:16px">2) Dados</h2>
-
-        <div class="row">
-          <div>
-            <label>Formato (2 colunas): Grupo,Valor (tab ou vírgula)</label>
-            <div class="small mono">A, 23.1<br/>A, 24.0<br/>B, 21.4</div>
-          </div>
-          <div>
-            <label>Importar CSV (Grupo, Valor, opcional X, opcional Tamanho)</label>
-            <input id="csvFile" type="file" accept=".csv,text/csv" />
-          </div>
-        </div>
-
-        <textarea id="dataInput"></textarea>
-
-        <div class="btns">
-          <button class="primary" id="btnUpdate">Atualizar gráficos e análises</button>
-          <button class="accent" id="btnDemo">Carregar exemplo</button>
-          <button class="ghost" id="btnSave">Salvar no navegador</button>
-          <button class="ghost" id="btnLoad">Carregar salvo</button>
-          <button class="warn" id="btnClear">Limpar</button>
-        </div>
-
-        <p class="small">
-          Para correlação/regressão/dispersão, use 3 colunas: Grupo, X, Y. Para bolhas, use 4: Grupo, X, Y, Tamanho.
-        </p>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>3) Configuração e resultados</h2>
-      <div class="body">
-        <div class="two">
-          <div>
-            <label>Tipo de gráfico</label>
-            <select id="chartType">
-              <option value="bar">Colunas</option>
-              <option value="line">Linha</option>
-              <option value="area">Área</option>
-              <option value="scatter">Dispersão (X vs Y)</option>
-              <option value="bubble">Bolhas (X,Y,Tamanho)</option>
-              <option value="radar">Radar</option>
-              <option value="pie">Pizza</option>
-              <option value="doughnut">Rosca</option>
-              <option value="hist">Histograma</option>
-              <option value="boxplot">Boxplot</option>
-            </select>
-          </div>
-          <div>
-            <label>Tipo de análise</label>
-            <select id="analysisType">
-              <option value="desc">Descritiva</option>
-              <option value="t">Teste t (2 grupos)</option>
-              <option value="anova">ANOVA (k grupos)</option>
-              <option value="mw">Mann–Whitney (2 grupos)</option>
-              <option value="kw">Kruskal–Wallis (k grupos)</option>
-              <option value="corr">Correlação</option>
-              <option value="reg">Regressão linear (Y ~ X)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <div>
-            <label>Método de correlação</label>
-            <select id="corrMethod">
-              <option value="pearson">Pearson</option>
-              <option value="spearman">Spearman</option>
-            </select>
-          </div>
-          <div>
-            <label>Sugestão automática</label>
-            <div id="autoHint" class="explain small">
-              Após “Atualizar”, a plataforma sugere um caminho (paramétrico ou não) com base em checagem simples de normalidade e tamanho amostral.
-            </div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <div class="kpi">
-          <div class="box">
-            <div class="t">Amostras (N)</div>
-            <div class="v" id="kN">–</div>
-          </div>
-          <div class="box">
-            <div class="t">Grupos</div>
-            <div class="v" id="kG">–</div>
-          </div>
-          <div class="box">
-            <div class="t">Normalidade (Jarque–Bera)</div>
-            <div class="v" id="kJB">–</div>
-            <div class="small" id="kJBNote"></div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <div class="small">Saída estatística (copie e cole no dossiê):</div>
-        <div id="resultBox" class="log" aria-live="polite"></div>
-
-        <div class="btns" style="margin-top:12px">
-          <button class="ghost" id="btnDownloadPlot">Baixar gráfico (PNG)</button>
-          <button class="ghost" id="btnDownloadTXT">Baixar resultados (TXT)</button>
-          <button class="ghost" id="btnDownloadPack">Baixar pacote (PNG + TXT)</button>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <section class="card">
-    <h2>4) Gráfico e interpretação</h2>
-    <div class="body">
-      <canvas id="chart" height="120"></canvas>
-      <div class="hr"></div>
-      <div class="explain" id="chartExplain"></div>
-
-      <div class="btns" style="margin-top:10px">
-        <button id="btnExportCSV">Exportar dados (CSV)</button>
-        <button id="btnExportJSON">Exportar dados+resultados (JSON)</button>
-      </div>
-
-      <p class="small">
-        Para trabalhos formais (artigos/relatórios), recomenda-se replicar análises no PAST4/R após aprender o método aqui.
-      </p>
-    </div>
-  </section>
-
-  <div class="footer">
-    Plataforma educacional para dossiês estatísticos em Biologia, Ecologia e Saúde.
-  </div>
+<div class="modal-overlay" id="modalOverlay"><div class="modal-box" id="modalBox"><div class="modal-icon question" id="modalIcon">?</div><div class="modal-title" id="modalTitle"></div><div class="modal-text" id="modalText"></div><div id="modalExtra"></div><div class="modal-actions" id="modalActions"></div></div></div>
+<div class="toast-container" id="toastContainer"></div>
+<canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+<header class="hero"><div class="hero-inner"><div class="hero-badge">Plataforma Educacional</div><h1>Dossiê <span class="gradient-text">Estatístico</span></h1><p class="hero-sub">Monte sua pergunta, cole os dados, verifique as premissas, rode testes e interprete. Tudo guiado passo a passo, com validações inteligentes para você aprender fazendo.</p><div class="hero-tags"><span class="hero-tag"><span class="tag-dot" style="background:var(--pink)"></span> Pergunta científica</span><span class="hero-tag"><span class="tag-dot" style="background:var(--blue)"></span> Réplicas e padronização</span><span class="hero-tag"><span class="tag-dot" style="background:var(--purple)"></span> Premissas estatísticas</span><span class="hero-tag"><span class="tag-dot" style="background:var(--teal)"></span> Testes e gráficos</span><span class="hero-tag"><span class="tag-dot" style="background:var(--amber)"></span> Exporta PNG / CSV / JSON</span></div></div></header>
+<div class="student-banner" id="studentBanner"><div class="student-banner-inner"><div class="student-avatar" id="studentAvatar">?</div><div class="student-info"><div class="student-name" id="studentDisplayName">Seu nome aqui</div><div class="student-question" id="studentDisplayQ">Sua pergunta aparece aqui</div></div><div class="student-stats"><div class="student-stat"><div class="student-stat-val" id="sBannerN">0</div><div class="student-stat-label">Amostras</div></div><div class="student-stat"><div class="student-stat-val" id="sBannerG">0</div><div class="student-stat-label">Grupos</div></div><div class="student-stat"><div class="student-stat-val" id="sBannerCheck">0/4</div><div class="student-stat-label">Checklist</div></div></div></div></div>
+<main class="main-wrap">
+<nav class="stepper" id="stepper"><div class="step-item active" data-step="0" onclick="goStep(0)"><div class="step-num">1</div><div class="step-label">Planejamento</div></div><div class="step-item" data-step="1" onclick="goStep(1)"><div class="step-num">2</div><div class="step-label">Dados</div></div><div class="step-item" data-step="2" onclick="goStep(2)"><div class="step-num">3</div><div class="step-label">Premissas</div></div><div class="step-item" data-step="3" onclick="goStep(3)"><div class="step-num">4</div><div class="step-label">Análise</div></div><div class="step-item" data-step="4" onclick="goStep(4)"><div class="step-num">5</div><div class="step-label">Resultados</div></div></nav>
+<section class="section active" id="sec0"><div class="card"><div class="card-header"><div class="card-header-icon" style="background:linear-gradient(135deg,rgba(255,45,120,.12),rgba(124,58,237,.12));color:var(--pink);">📋</div><div><h2>Planejamento da Semana</h2><div class="card-hint">Identifique-se e defina sua pergunta científica</div></div></div><div class="card-body"><div class="form-row"><div class="form-group"><label>Identificação</label><input id="studentName" type="text" placeholder="Ex.: Maria Silva – Semana 03"/></div><div class="form-group"><label>Variável principal (Y)</label><input id="varName" type="text" placeholder="Ex.: Temperatura (°C), Passos, Horas de sono"/></div></div><div class="form-group"><label>Pergunta científica da semana <span class="req">*</span></label><input id="qSci" type="text" placeholder="Ex.: A chuva aumenta o número de mosquitos observados à noite?"/><div class="hint">Precisa ter relação entre variável(is) e um contexto biológico, ecológico ou de saúde.</div></div><div class="form-group"><label>O que você quer resolver esta semana? (opcional)</label><input id="qSolve" type="text" placeholder="Ex.: Quero comparar dois bairros; entender se existe tendência..."/></div><div class="checklist-card" style="margin-top:8px"><div class="checklist-title">✅ Réplicas e Qualidade do Dado</div><div class="checklist-items"><label class="check-item"><input type="checkbox" id="ckRep" onchange="updateChecklist()"/><span>Tenho réplicas (mais de 1 medida) para cada grupo/condição.</span></label><label class="check-item"><input type="checkbox" id="ckPad" onchange="updateChecklist()"/><span>Registrei sempre do mesmo jeito (mesma regra de coleta e unidade).</span></label><label class="check-item"><input type="checkbox" id="ckInd" onchange="updateChecklist()"/><span>As observações são independentes (não contei o mesmo evento como novo).</span></label><label class="check-item"><input type="checkbox" id="ckTime" onchange="updateChecklist()"/><span>Se existe horário/dia, eu mantive o padrão (ou registrei para controlar).</span></label></div></div><div class="nav-btns"><div></div><button class="btn btn-primary" onclick="validateStep0()">Próximo: Dados ➜</button></div></div></div></section>
+<section class="section" id="sec1"><div class="card"><div class="card-header"><div class="card-header-icon" style="background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(6,182,212,.12));color:var(--blue);">📊</div><div><h2>Entrada de Dados</h2><div class="card-hint">Cole ou importe seus dados no formato Grupo, Valor</div></div></div><div class="card-body"><div class="form-row"><div class="form-group"><label>Formato: Grupo, Valor (tab ou vírgula)</label><div class="hint" style="font-family:'JetBrains Mono',monospace;margin-top:0">A, 23.1 | A, 24.0 | B, 21.4</div><div class="hint">Para correlação: Grupo, X, Y. Para bolhas: Grupo, X, Y, Tamanho.</div></div><div class="form-group"><label>Importar CSV</label><input id="csvFile" type="file" accept=".csv,text/csv"/></div></div><div class="form-group"><textarea id="dataInput" placeholder="Cole seus dados aqui...&#10;CasaA, 27.1&#10;CasaA, 28.4&#10;CasaB, 26.2&#10;CasaB, 25.9"></textarea></div><div class="btn-row"><button class="btn btn-accent btn-sm" onclick="setDemo()">Carregar exemplo</button><button class="btn btn-ghost btn-sm" onclick="clearData()">Limpar dados</button></div><div class="nav-btns"><button class="btn btn-ghost" onclick="goStep(0)">← Planejamento</button><button class="btn btn-primary" onclick="validateStep1()">Próximo: Premissas ➜</button></div></div></div></section>
+<section class="section" id="sec2"><div class="card"><div class="card-header"><div class="card-header-icon" style="background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(249,115,22,.12));color:var(--amber);">🔍</div><div><h2>Verificação de Premissas</h2><div class="card-hint">Antes de escolher o teste, verifique se seus dados atendem às premissas estatísticas</div></div></div><div class="card-body"><div class="premise-grid" id="premiseGrid"><div class="premise-card na" id="pcNorm"><div class="premise-header"><span class="premise-icon">📐</span><span class="premise-title">Normalidade</span><span class="premise-status" id="psNorm">Aguardando</span></div><div class="premise-detail" id="pdNorm">Clique em "Verificar premissas" para testar a normalidade dos dados (Shapiro–Wilk e Jarque–Bera).</div></div><div class="premise-card na" id="pcLevene"><div class="premise-header"><span class="premise-icon">⚖️</span><span class="premise-title">Homocedasticidade (Levene)</span><span class="premise-status" id="psLevene">Aguardando</span></div><div class="premise-detail" id="pdLevene">Verifica se as variâncias dos grupos são semelhantes (premissa para ANOVA e teste t).</div></div><div class="premise-card na" id="pcN"><div class="premise-header"><span class="premise-icon">📏</span><span class="premise-title">Tamanho amostral</span><span class="premise-status" id="psN">Aguardando</span></div><div class="premise-detail" id="pdN">Avalia se o N é suficiente para inferência estatística.</div></div><div class="premise-card na" id="pcIndep"><div class="premise-header"><span class="premise-icon">🔗</span><span class="premise-title">Independência</span><span class="premise-status" id="psIndep">Aguardando</span></div><div class="premise-detail" id="pdIndep">Baseada no checklist de qualidade do dado preenchido na etapa 1.</div></div></div><div class="btn-row" style="margin-bottom:20px"><button class="btn btn-primary" onclick="runPremises()">🔬 Verificar premissas</button></div><div class="reco-box descriptive" id="recoBox" style="display:none"><div class="reco-title" id="recoTitle">💡 Recomendação</div><div class="reco-text" id="recoText"></div></div><div class="nav-btns"><button class="btn btn-ghost" onclick="goStep(1)">← Dados</button><button class="btn btn-primary" onclick="validateStep2()">Próximo: Análise ➜</button></div></div></div></section>
+<section class="section" id="sec3"><div class="card"><div class="card-header"><div class="card-header-icon" style="background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(79,70,229,.12));color:var(--purple);">🧪</div><div><h2>Configuração da Análise</h2><div class="card-hint">Escolha o gráfico e o tipo de teste estatístico</div></div></div><div class="card-body"><div class="form-row"><div class="form-group"><label>Tipo de gráfico</label><select id="chartType"><option value="bar">Colunas</option><option value="line">Linha</option><option value="area">Área</option><option value="scatter">Dispersão (X vs Y)</option><option value="bubble">Bolhas (X, Y, Tamanho)</option><option value="radar">Radar</option><option value="pie">Pizza</option><option value="doughnut">Rosca</option><option value="hist">Histograma</option><option value="boxplot">Boxplot</option></select></div><div class="form-group"><label>Tipo de análise</label><select id="analysisType"><option value="desc">Descritiva</option><option value="t">Teste t (2 grupos)</option><option value="anova">ANOVA (k grupos)</option><option value="mw">Mann–Whitney (2 grupos)</option><option value="kw">Kruskal–Wallis (k grupos)</option><option value="corr">Correlação</option><option value="reg">Regressão linear (Y ~ X)</option></select></div></div><div class="form-row"><div class="form-group"><label>Método de correlação</label><select id="corrMethod"><option value="pearson">Pearson</option><option value="spearman">Spearman</option></select></div><div class="form-group"><label>Hipótese esperada (opcional)</label><input id="hypothesis" type="text" placeholder="Ex.: Espero que o grupo A tenha média maior que B"/><div class="hint">Escreva o que você espera encontrar antes de ver os resultados.</div></div></div><div class="suggestion-box"><strong>Sugestão automática</strong><div class="sugg-text" id="autoHint">Rode a análise para receber sugestões.</div></div><div class="nav-btns"><button class="btn btn-ghost" onclick="goStep(2)">← Premissas</button><button class="btn btn-primary" onclick="runAndShow()">Rodar análise e ver resultados ➜</button></div></div></div></section>
+<section class="section" id="sec4"><div class="card"><div class="card-header"><div class="card-header-icon" style="background:linear-gradient(135deg,rgba(13,148,136,.12),rgba(132,204,22,.12));color:var(--teal);">📈</div><div><h2>Resultados e Interpretação</h2><div class="card-hint">Veja seus gráficos, KPIs e saída estatística</div></div></div><div class="card-body"><div class="progress-section"><div class="progress-ring-wrap"><svg width="64" height="64" viewBox="0 0 64 64"><circle class="progress-ring-bg" cx="32" cy="32" r="28" fill="none" stroke-width="5"/><circle class="progress-ring-fill" id="progressRing" cx="32" cy="32" r="28" fill="none" stroke-width="5" stroke-dasharray="175.93" stroke-dashoffset="175.93"/></svg><div class="progress-pct" id="progressPct">0%</div></div><div class="progress-info"><div class="progress-title">Completude do dossiê</div><div class="progress-detail" id="progressDetail">Preencha todos os campos para completar.</div></div></div><div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Amostras (N)</div><div class="kpi-value" id="kN">–</div></div><div class="kpi-card"><div class="kpi-label">Grupos</div><div class="kpi-value" id="kG">–</div></div><div class="kpi-card"><div class="kpi-label">Normalidade (JB)</div><div class="kpi-value" id="kJB">–</div><div class="kpi-note" id="kJBNote"></div></div></div><div class="chart-wrapper"><canvas id="chart" height="140"></canvas><div class="chart-explain" id="chartExplain"></div></div><div class="form-group"><label>Saída estatística</label><div class="result-log" id="resultBox" aria-live="polite">Clique em "Rodar análise" na etapa anterior.</div></div><div class="btn-row"><button class="btn btn-export btn-sm" id="btnDownloadPlot">📷 Gráfico PNG</button><button class="btn btn-export btn-sm" id="btnDownloadTXT">📝 Resultados TXT</button><button class="btn btn-export btn-sm" id="btnExportCSV">📄 Dados CSV</button><button class="btn btn-export btn-sm" id="btnExportJSON">📦 Pacote JSON</button><button class="btn btn-primary btn-sm" id="btnDownloadPack">⬇ Baixar tudo</button></div><div class="hint" style="margin-top:12px">Para trabalhos formais (artigos/relatórios), recomenda-se replicar análises no PAST4/R após aprender o método aqui.</div><div class="nav-btns"><button class="btn btn-ghost" onclick="goStep(3)">← Configuração</button><button class="btn btn-accent" onclick="finalizeDossie()">Finalizar dossiê ✓</button></div></div></div></section>
 </main>
-
+<footer class="footer">Dossiê Estatístico · Biologia, Ecologia e Saúde · <a href="https://ernandes-sobreira.github.io/dossie-estatistico/" target="_blank">UNEMAT</a></footer>
 <script>
-  // --------------------------
-  // Utilitários numéricos
-  // --------------------------
-  const sum = (a)=>a.reduce((p,c)=>p+c,0);
-  const mean = (a)=> a.length? sum(a)/a.length : NaN;
-  const variance = (a, sample=true)=>{
-    if(a.length < (sample?2:1)) return NaN;
-    const m = mean(a);
-    const v = a.reduce((p,c)=>p+(c-m)*(c-m),0);
-    return v / (a.length - (sample?1:0));
-  };
-  const sd = (a, sample=true)=> Math.sqrt(variance(a, sample));
-  const median = (a)=>{
-    if(!a.length) return NaN;
-    const b=[...a].sort((x,y)=>x-y);
-    const mid=Math.floor(b.length/2);
-    return b.length%2? b[mid] : (b[mid-1]+b[mid])/2;
-  };
-  const quantile = (a,q)=>{
-    if(!a.length) return NaN;
-    const b=[...a].sort((x,y)=>x-y);
-    const pos = (b.length-1)*q;
-    const base = Math.floor(pos);
-    const rest = pos-base;
-    if(b[base+1]===undefined) return b[base];
-    return b[base] + rest*(b[base+1]-b[base]);
-  };
-  const skewness = (a)=>{
-    const n=a.length; if(n<3) return NaN;
-    const m=mean(a); const s=sd(a,true); if(!isFinite(s) || s===0) return NaN;
-    const g = a.reduce((p,x)=>p+Math.pow((x-m)/s,3),0) * (n/((n-1)*(n-2)));
-    return g;
-  };
-  const kurtosisExcess = (a)=>{
-    const n=a.length; if(n<4) return NaN;
-    const m=mean(a); const s=sd(a,true); if(!isFinite(s) || s===0) return NaN;
-    const term1 = (n*(n+1))/((n-1)*(n-2)*(n-3));
-    const term2 = a.reduce((p,x)=>p+Math.pow((x-m)/s,4),0);
-    const term3 = (3*(n-1)*(n-1))/((n-2)*(n-3));
-    return term1*term2 - term3;
-  };
-
-  const jarqueBera = (a)=>{
-    const n=a.length;
-    if(n<5) return {JB:NaN, p:NaN};
-    const s=skewness(a);
-    const k=kurtosisExcess(a);
-    const JB = (n/6)*(s*s + (k*k)/4);
-    const p = Math.exp(-JB/2);
-    return {JB, p};
-  };
-
-  function rank(values){
-    const indexed = values.map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v);
-    const ranks = new Array(values.length);
-    let i=0;
-    while(i<indexed.length){
-      let j=i;
-      while(j<indexed.length && indexed[j].v===indexed[i].v) j++;
-      const avgRank = (i+1 + j)/2;
-      for(let k=i;k<j;k++) ranks[indexed[k].i]=avgRank;
-      i=j;
-    }
-    return ranks;
-  }
-
-  function phi(z){
-    const t = 1/(1+0.2316419*z);
-    const d = 0.3989423*Math.exp(-z*z/2);
-    const prob = d*t*(0.3193815 + t*(-0.3565638 + t*(1.781478 + t*(-1.821256 + t*1.330274))));
-    return 1 - prob;
-  }
-  function approxTPValue(t, df){
-    const at = Math.abs(t);
-    return 2*(1-phi(at));
-  }
-  function approxFPValue(F, d1, d2){
-    if(!isFinite(F) || F<=0) return NaN;
-    const z = (Math.log(F)) * Math.sqrt(Math.max(1,(d2-2))/2);
-    const p = 1-phi(z);
-    return Math.max(0, Math.min(1,p));
-  }
-  function approxChiSqPValue(x, k){
-    if(!isFinite(x) || x<0) return NaN;
-    if(k<=0) return NaN;
-    const z = (Math.pow(x/k, 1/3) - (1 - 2/(9*k))) / Math.sqrt(2/(9*k));
-    const p = 1-phi(z);
-    return Math.max(0, Math.min(1,p));
-  }
-
-  function pearson(x,y){
-    const n=x.length; if(n!==y.length || n<2) return {r:NaN, p:NaN};
-    const mx=mean(x), my=mean(y);
-    let num=0, dx=0, dy=0;
-    for(let i=0;i<n;i++){
-      const a=x[i]-mx, b=y[i]-my;
-      num += a*b; dx += a*a; dy += b*b;
-    }
-    const r = num / Math.sqrt(dx*dy);
-    const t = r*Math.sqrt((n-2)/(1-r*r));
-    const p = approxTPValue(t, n-2);
-    return {r, p};
-  }
-  function spearman(x,y){
-    const rx=rank(x), ry=rank(y);
-    return pearson(rx,ry);
-  }
-  function linReg(x,y){
-    const n=x.length; if(n!==y.length || n<2) return null;
-    const mx=mean(x), my=mean(y);
-    let sxx=0, sxy=0, syy=0;
-    for(let i=0;i<n;i++){
-      const dx=x[i]-mx, dy=y[i]-my;
-      sxx += dx*dx; sxy += dx*dy; syy += dy*dy;
-    }
-    const b1 = sxy/sxx;
-    const b0 = my - b1*mx;
-    const yhat = x.map(v=>b0 + b1*v);
-    const ssRes = y.reduce((p,yi,i)=>p+(yi-yhat[i])**2,0);
-    const ssTot = syy;
-    const r2 = 1 - ssRes/ssTot;
-
-    const se2 = ssRes/(n-2);
-    const seb1 = Math.sqrt(se2/sxx);
-    const t = b1/seb1;
-    const p = approxTPValue(t, n-2);
-
-    return {b0,b1,r2,t,p,yhat};
-  }
-  function tTest2(a,b){
-    const n1=a.length, n2=b.length;
-    if(n1<2 || n2<2) return null;
-    const m1=mean(a), m2=mean(b);
-    const v1=variance(a,true), v2=variance(b,true);
-    const sp = Math.sqrt(((n1-1)*v1 + (n2-1)*v2)/(n1+n2-2));
-    const t = (m1-m2)/(sp*Math.sqrt(1/n1 + 1/n2));
-    const df = n1+n2-2;
-    const p = approxTPValue(t, df);
-    return {t, df, p, m1, m2};
-  }
-  function anovaOneWay(groups){
-    const keys = Object.keys(groups);
-    if(keys.length<2) return null;
-    const all = keys.flatMap(k=>groups[k]);
-    const grand = mean(all);
-    let ssb=0, ssw=0, N=0;
-    keys.forEach(k=>{
-      const arr=groups[k]; N+=arr.length;
-      const mk=mean(arr);
-      ssb += arr.length*(mk-grand)**2;
-      ssw += arr.reduce((p,x)=>p+(x-mk)**2,0);
-    });
-    const dfb = keys.length-1;
-    const dfw = N-keys.length;
-    const msb = ssb/dfb;
-    const msw = ssw/dfw;
-    const F = msb/msw;
-    const p = approxFPValue(F, dfb, dfw);
-    return {F, dfb, dfw, p};
-  }
-  function mannWhitney(a,b){
-    const n1=a.length, n2=b.length;
-    if(n1<1 || n2<1) return null;
-    const combined = a.concat(b);
-    const r = rank(combined);
-    const r1 = r.slice(0,n1);
-    const R1 = sum(r1);
-    const U1 = R1 - (n1*(n1+1))/2;
-    const U2 = n1*n2 - U1;
-    const U = Math.min(U1,U2);
-
-    const mu = n1*n2/2;
-    const sigma = Math.sqrt(n1*n2*(n1+n2+1)/12);
-    const z = (U - mu) / sigma;
-    const p = 2*(1-phi(Math.abs(z)));
-    return {U, z, p};
-  }
-  function kruskalWallis(groups){
-    const keys = Object.keys(groups);
-    if(keys.length<2) return null;
-    const all = keys.flatMap(k=>groups[k].map(v=>({g:k,v})));
-    const values = all.map(o=>o.v);
-    const r = rank(values);
-
-    let N = values.length;
-    let sumRanks = {};
-    let ns = {};
-    keys.forEach(k=>{sumRanks[k]=0; ns[k]=0;});
-    all.forEach((o,i)=>{
-      sumRanks[o.g]+=r[i];
-      ns[o.g]+=1;
-    });
-
-    let H=0;
-    keys.forEach(k=>{
-      H += (sumRanks[k]*sumRanks[k])/ns[k];
-    });
-    H = (12/(N*(N+1)))*H - 3*(N+1);
-
-    const df = keys.length-1;
-    const p = approxChiSqPValue(H, df);
-    return {H, df, p};
-  }
-
-  // --------------------------
-  // Parser
-  // --------------------------
-  function toNum(s){
-    if(s===null || s===undefined) return NaN;
-    const str = String(s).trim();
-    const hasComma = str.includes(',');
-    if(hasComma){
-      const vv = str.replace(/\./g,'').replace(',','.');
-      return Number(vv);
-    }
-    return Number(str);
-  }
-
-  function parseText(text){
-    const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-    const rows = [];
-    for(const line of lines){
-      const parts = line.split(/[\t,;]+/).map(s=>s.trim()).filter(x=>x.length>0);
-      if(parts.length<2) continue;
-      const group = parts[0] || "Série";
-      const n1 = toNum(parts[1]);
-      const n2 = parts.length>=3 ? toNum(parts[2]) : NaN;
-      const n3 = parts.length>=4 ? toNum(parts[3]) : NaN;
-
-      if(parts.length===2){
-        rows.push({group, x: NaN, y: n1, size: NaN});
-      } else if(parts.length===3){
-        rows.push({group, x: n1, y: n2, size: NaN});
-      } else {
-        rows.push({group, x: n1, y: n2, size: n3});
-      }
-    }
-    return rows.filter(r=>Number.isFinite(r.y));
-  }
-
-  function groupBy(rows){
-    const g = {};
-    for(const r of rows){
-      const k = r.group || "Série";
-      if(!g[k]) g[k]=[];
-      g[k].push(r);
-    }
-    return g;
-  }
-
-  // --------------------------
-  // Gráficos
-  // --------------------------
-  let chart=null;
-  function destroyChart(){ if(chart){ chart.destroy(); chart=null; } }
-
-  function brightColors(i){
-    const palette = ["#ff006e","#3a86ff","#8338ec","#06d6a0","#ffbe0b","#fb5607","#00b4d8","#9b5de5","#f15bb5","#00f5d4"];
-    return palette[i % palette.length];
-  }
-
-  function makeHistogram(values, bins=10){
-    const minV=Math.min(...values), maxV=Math.max(...values);
-    if(minV===maxV){
-      return {labels:[String(minV)], counts:[values.length]};
-    }
-    const width = (maxV-minV)/bins;
-    const counts = Array(bins).fill(0);
-    for(const v of values){
-      let idx = Math.floor((v-minV)/width);
-      if(idx===bins) idx=bins-1;
-      counts[idx]++;
-    }
-    const labels = counts.map((_,i)=>{
-      const a = minV + i*width;
-      const b = a + width;
-      return `${a.toFixed(2)}–${b.toFixed(2)}`;
-    });
-    return {labels, counts};
-  }
-
-  function renderChart(rows, chartType, varLabel){
-    destroyChart();
-    const ctx=document.getElementById('chart');
-    const byG = groupBy(rows);
-    const keys = Object.keys(byG);
-    const explain = document.getElementById('chartExplain');
-
-    if(chartType==="hist"){
-      const values = rows.map(r=>r.y);
-      const {labels, counts} = makeHistogram(values, 10);
-      chart = new Chart(ctx, {
-        type:"bar",
-        data:{ labels, datasets:[{
-          label:`Histograma – ${varLabel || "Valor"}`,
-          data:counts,
-          backgroundColor: labels.map((_,i)=>brightColors(i))
-        }]},
-        options:{responsive:true, plugins:{legend:{display:true}}}
-      });
-      explain.innerHTML = `<strong>Histograma:</strong> mostra a distribuição. Use para ver assimetria, concentração de valores e extremos.`;
-      return;
-    }
-
-    if(chartType==="boxplot"){
-      const datasets = keys.map((k,i)=>({
-        label:k,
-        data:[byG[k].map(r=>r.y)],
-        backgroundColor: brightColors(i) + "33",
-        borderColor: brightColors(i),
-        borderWidth: 2
-      }));
-      chart = new Chart(ctx, {
-        type:"boxplot",
-        data:{ labels:[""], datasets },
-        options:{responsive:true, plugins:{legend:{position:"bottom"}}}
-      });
-      explain.innerHTML = `<strong>Boxplot:</strong> compara grupos. Caixa = Q1–Q3, linha = mediana, pontos fora = valores extremos.`;
-      return;
-    }
-
-    if(chartType==="scatter" || chartType==="bubble"){
-      const hasX = rows.some(r=>Number.isFinite(r.x));
-      if(!hasX){
-        explain.innerHTML = `<strong>Este gráfico precisa de X.</strong> Use 3 colunas: Grupo, X, Y.`;
-        chart = new Chart(ctx, { type:"scatter", data:{datasets:[]}, options:{responsive:true} });
-        return;
-      }
-      const datasets = keys.map((k,i)=>{
-        const pts = byG[k].filter(r=>Number.isFinite(r.x)).map(r=>{
-          if(chartType==="bubble"){
-            return {x:r.x, y:r.y, r: Number.isFinite(r.size)? Math.max(3, Math.min(18, r.size)) : 6};
-          }
-          return {x:r.x, y:r.y};
-        });
-        return { label:k, data:pts, backgroundColor: brightColors(i) + (chartType==="bubble" ? "88" : "cc"), borderColor: brightColors(i) };
-      });
-      chart = new Chart(ctx, {
-        type: chartType==="bubble" ? "bubble" : "scatter",
-        data:{datasets},
-        options:{
-          responsive:true,
-          plugins:{legend:{position:"bottom"}},
-          scales:{ x:{title:{display:true,text:"X"}}, y:{title:{display:true,text: varLabel || "Y"}} }
-        }
-      });
-      explain.innerHTML = `<strong>Dispersão:</strong> cada ponto é uma observação (X,Y). Use para enxergar tendência e outliers.`;
-      return;
-    }
-
-    const means = keys.map(k=>mean(byG[k].map(r=>r.y)));
-    const type = chartType==="area" ? "line" : chartType;
-
-    const dataset = {
-      label:`Média por grupo – ${varLabel || "Valor"}`,
-      data:means,
-      backgroundColor: keys.map((_,i)=> brightColors(i) + (type==="line" ? "33" : "cc")),
-      borderColor: keys.map((_,i)=> brightColors(i)),
-      borderWidth: 2,
-      fill: chartType==="area"
-    };
-
-    chart = new Chart(ctx, {
-      type,
-      data:{ labels: keys, datasets:[dataset] },
-      options:{
-        responsive:true,
-        plugins:{legend:{display: type!=="pie" && type!=="doughnut"}},
-        scales: (type==="pie" || type==="doughnut" || type==="radar") ? {} : { y:{title:{display:true,text: varLabel || "Valor"}} }
-      }
-    });
-
-    const explainText = {
-      bar: "Colunas: útil para comparar médias entre grupos.",
-      line: "Linha: útil para sequências ordenadas (ex.: dias).",
-      area: "Área: semelhante ao gráfico de linha, destacando magnitude.",
-      radar:"Radar: comparação de perfis entre categorias (use com cuidado).",
-      pie:"Pizza: proporção; evite muitos grupos.",
-      doughnut:"Rosca: proporção; evite muitos grupos."
-    }[chartType] || "Gráfico de comparação.";
-    explain.innerHTML = `<strong>Leitura do gráfico:</strong> ${explainText} Aqui foi usada a média por grupo.`;
-  }
-
-  // --------------------------
-  // Estatística e relatórios
-  // --------------------------
-  function formatNum(x){
-    if(!isFinite(x)) return "NA";
-    const ax=Math.abs(x);
-    if(ax>=1000) return x.toFixed(2);
-    if(ax>=10) return x.toFixed(3);
-    return x.toFixed(4);
-  }
-
-  function summarize(rows){
-    const y = rows.map(r=>r.y);
-    const byG = groupBy(rows);
-    const keys = Object.keys(byG);
-    const {JB, p} = jarqueBera(y);
-
-    const lines = [];
-    lines.push(`Identificação: ${document.getElementById('studentName').value || "—"}`);
-    lines.push(`Variável (Y): ${document.getElementById('varName').value || "—"}`);
-    lines.push(`Pergunta científica: ${document.getElementById('qSci').value || "—"}`);
-    const solve = document.getElementById('qSolve').value.trim();
-    if(solve) lines.push(`Objetivo prático da semana: ${solve}`);
-    lines.push("");
-
-    lines.push(`Resumo geral:`);
-    lines.push(`N = ${y.length}`);
-    lines.push(`Média = ${formatNum(mean(y))}`);
-    lines.push(`Mediana = ${formatNum(median(y))}`);
-    lines.push(`DP (amostral) = ${formatNum(sd(y,true))}`);
-    lines.push(`Mínimo = ${formatNum(Math.min(...y))}`);
-    lines.push(`Q1 = ${formatNum(quantile(y,0.25))}`);
-    lines.push(`Q3 = ${formatNum(quantile(y,0.75))}`);
-    lines.push(`Máximo = ${formatNum(Math.max(...y))}`);
-    lines.push("");
-
-    lines.push(`Normalidade (Jarque–Bera, aproximação): JB = ${formatNum(JB)} | p ≈ ${formatNum(p)}`);
-    if(isFinite(p)){
-      lines.push(p>=0.05 ? `Interpretação: compatível com normalidade (p≥0,05), em nível didático.` :
-                           `Interpretação: possível não-normalidade (p<0,05). Considere testes não paramétricos.`);
-    } else {
-      lines.push("Interpretação: amostra pequena para checagem de normalidade.");
-    }
-
-    lines.push("");
-    lines.push(`Resumo por grupo:`);
-    keys.forEach(k=>{
-      const arr = byG[k].map(r=>r.y);
-      lines.push(`- ${k}: n=${arr.length}, média=${formatNum(mean(arr))}, mediana=${formatNum(median(arr))}, DP=${formatNum(sd(arr,true))}`);
-    });
-
-    return {text: lines.join("\n"), jb:{JB,p}, keys, byG};
-  }
-
-  function runAnalysis(rows){
-    const analysisType = document.getElementById('analysisType').value;
-    const corrMethod = document.getElementById('corrMethod').value;
-
-    const byG = groupBy(rows);
-    const keys = Object.keys(byG);
-    const yAll = rows.map(r=>r.y);
-    const jb = jarqueBera(yAll);
-
-    const parts = [];
-    const base = summarize(rows);
-    parts.push(base.text);
-    parts.push("");
-
-    function needTwoGroups(){
-      if(keys.length !== 2){
-        parts.push(`Aviso: esta análise exige exatamente 2 grupos. Grupos encontrados: ${keys.length}.`);
-        return false;
-      }
-      return true;
-    }
-    function needAtLeastTwoGroups(){
-      if(keys.length < 2){
-        parts.push(`Aviso: esta análise exige pelo menos 2 grupos.`);
-        return false;
-      }
-      return true;
-    }
-
-    if(analysisType==="desc"){
-      parts.push("Análise: Descritiva.");
-    }
-
-    if(analysisType==="t"){
-      if(needTwoGroups()){
-        const a = byG[keys[0]].map(r=>r.y);
-        const b = byG[keys[1]].map(r=>r.y);
-        const out = tTest2(a,b);
-        if(out){
-          parts.push("Análise: Teste t (2 grupos, didático).");
-          parts.push(`Grupo 1 (${keys[0]}): média=${formatNum(out.m1)} | n=${a.length}`);
-          parts.push(`Grupo 2 (${keys[1]}): média=${formatNum(out.m2)} | n=${b.length}`);
-          parts.push(`t = ${formatNum(out.t)} | gl = ${out.df} | p ≈ ${formatNum(out.p)}`);
-        }
-      }
-    }
-
-    if(analysisType==="anova"){
-      if(needAtLeastTwoGroups()){
-        const g = {};
-        keys.forEach(k=>g[k]=byG[k].map(r=>r.y));
-        const out = anovaOneWay(g);
-        if(out){
-          parts.push("Análise: ANOVA (1 fator).");
-          parts.push(`F = ${formatNum(out.F)} | gl = (${out.dfb}, ${out.dfw}) | p ≈ ${formatNum(out.p)}`);
-          parts.push("Se p<0,05, há evidência de diferença entre grupos. Padrão ouro: pós-teste no PAST4/R.");
-        }
-      }
-    }
-
-    if(analysisType==="mw"){
-      if(needTwoGroups()){
-        const a = byG[keys[0]].map(r=>r.y);
-        const b = byG[keys[1]].map(r=>r.y);
-        const out = mannWhitney(a,b);
-        if(out){
-          parts.push("Análise: Mann–Whitney (2 grupos).");
-          parts.push(`U = ${formatNum(out.U)} | z ≈ ${formatNum(out.z)} | p ≈ ${formatNum(out.p)}`);
-        }
-      }
-    }
-
-    if(analysisType==="kw"){
-      if(needAtLeastTwoGroups()){
-        const g = {};
-        keys.forEach(k=>g[k]=byG[k].map(r=>r.y));
-        const out = kruskalWallis(g);
-        if(out){
-          parts.push("Análise: Kruskal–Wallis (k grupos).");
-          parts.push(`H = ${formatNum(out.H)} | gl = ${out.df} | p ≈ ${formatNum(out.p)}`);
-        }
-      }
-    }
-
-    if(analysisType==="corr"){
-      const xs = rows.filter(r=>Number.isFinite(r.x)).map(r=>r.x);
-      const ys = rows.filter(r=>Number.isFinite(r.x)).map(r=>r.y);
-      if(xs.length<3){
-        parts.push("Aviso: correlação exige X. Use 3 colunas: Grupo, X, Y.");
-      } else {
-        const out = (corrMethod==="spearman") ? spearman(xs,ys) : pearson(xs,ys);
-        parts.push(`Análise: Correlação (${corrMethod}).`);
-        parts.push(`r = ${formatNum(out.r)} | p ≈ ${formatNum(out.p)}`);
-      }
-    }
-
-    if(analysisType==="reg"){
-      const xs = rows.filter(r=>Number.isFinite(r.x)).map(r=>r.x);
-      const ys = rows.filter(r=>Number.isFinite(r.x)).map(r=>r.y);
-      if(xs.length<3){
-        parts.push("Aviso: regressão exige X. Use 3 colunas: Grupo, X, Y.");
-      } else {
-        const out = linReg(xs,ys);
-        if(out){
-          parts.push("Análise: Regressão linear (Y ~ X).");
-          parts.push(`Equação: Y = ${formatNum(out.b0)} + ${formatNum(out.b1)}·X`);
-          parts.push(`R² = ${formatNum(out.r2)} | p ≈ ${formatNum(out.p)}`);
-        }
-      }
-    }
-
-    // KPIs
-    document.getElementById('kN').textContent = rows.length;
-    document.getElementById('kG').textContent = Object.keys(byG).length;
-    document.getElementById('kJB').textContent = isFinite(jb.p) ? `p≈${formatNum(jb.p)}` : "NA";
-    document.getElementById('kJBNote').textContent =
-      isFinite(jb.p) ? (jb.p>=0.05 ? "Sugere normalidade (didático)." : "Sugere não-normalidade (didático).")
-                     : "Amostra pequena.";
-
-    // Sugestão automática (inclui alerta de N)
-    const hint = document.getElementById('autoHint');
-    const N = rows.length;
-    const lowN = N < 5;
-    const anySmallGroup = Object.values(byG).some(arr => arr.length < 3);
-
-    let msg = "";
-    if(lowN){
-      msg += "<strong>Atenção:</strong> N muito baixo. Tente aumentar réplicas.<br/>";
-    }
-    if(anySmallGroup){
-      msg += "<strong>Atenção:</strong> algum grupo tem menos de 3 réplicas.<br/>";
-    }
-    if(isFinite(jb.p)){
-      msg += jb.p>=0.05
-        ? "Sugestão: testes paramétricos podem ser tentados se as premissas fizerem sentido."
-        : "Sugestão: considere testes não paramétricos e use boxplot/histograma.";
-    } else {
-      msg += "Sugestão: use descrição + gráficos e aumente a amostra para inferência melhor.";
-    }
-    hint.innerHTML = msg;
-
-    // Ajuste do lembrete de réplicas
-    const replicaHint = document.getElementById('replicaHint');
-    replicaHint.textContent = lowN
-      ? "Você tem poucas observações. A prioridade é aumentar réplicas e padronizar a coleta."
-      : "Bom: agora foque em comparar grupos/relacionar variáveis e interpretar biologicamente.";
-
-    return parts.join("\n");
-  }
-
-  // --------------------------
-  // Export
-  // --------------------------
-  function downloadText(filename, text, mime){
-    const blob = new Blob([text], {type: mime});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
-  }
-
-  function exportCSV(rows){
-    const head = "Grupo,X,Y,Tamanho\n";
-    const body = rows.map(r=>{
-      const x = Number.isFinite(r.x)? r.x : "";
-      const s = Number.isFinite(r.size)? r.size : "";
-      return `${r.group},${x},${r.y},${s}`;
-    }).join("\n");
-    downloadText("dados.csv", head+body, "text/csv");
-  }
-
-  function exportJSON(rows, resultText){
-    const payload = {
-      studentName: document.getElementById('studentName').value || null,
-      variableY: document.getElementById('varName').value || null,
-      questionScientific: document.getElementById('qSci').value || null,
-      objectiveSolve: document.getElementById('qSolve').value || null,
-      checklist: {
-        replicas: document.getElementById('ckRep').checked,
-        padronizacao: document.getElementById('ckPad').checked,
-        independencia: document.getElementById('ckInd').checked,
-        tempoPadrao: document.getElementById('ckTime').checked
-      },
-      chartType: document.getElementById('chartType').value,
-      analysisType: document.getElementById('analysisType').value,
-      corrMethod: document.getElementById('corrMethod').value,
-      rows,
-      result: resultText,
-      exportedAt: new Date().toISOString()
-    };
-    downloadText("dossie.json", JSON.stringify(payload,null,2), "application/json");
-  }
-
-  function downloadPlotPNG(){
-    if(!chart) return alert("Nenhum gráfico disponível. Clique em Atualizar.");
-    const url = chart.toBase64Image("image/png", 1);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "grafico.png";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  }
-
-  function downloadResultsTXT(resultText){
-    const id = (document.getElementById('studentName').value || "dossie").replace(/[^\w\-]+/g,"_");
-    downloadText(`${id}_resultados.txt`, resultText, "text/plain;charset=utf-8");
-  }
-
-  // --------------------------
-  // LocalStorage
-  // --------------------------
-  function saveLocal(){
-    const state = {
-      studentName: document.getElementById('studentName').value,
-      varName: document.getElementById('varName').value,
-      qSci: document.getElementById('qSci').value,
-      qSolve: document.getElementById('qSolve').value,
-      checks: {
-        ckRep: document.getElementById('ckRep').checked,
-        ckPad: document.getElementById('ckPad').checked,
-        ckInd: document.getElementById('ckInd').checked,
-        ckTime: document.getElementById('ckTime').checked
-      },
-      dataInput: document.getElementById('dataInput').value,
-      chartType: document.getElementById('chartType').value,
-      analysisType: document.getElementById('analysisType').value,
-      corrMethod: document.getElementById('corrMethod').value
-    };
-    localStorage.setItem("dossie_state_v2", JSON.stringify(state));
-  }
-  function loadLocal(){
-    const raw = localStorage.getItem("dossie_state_v2");
-    if(!raw) return false;
-    const s = JSON.parse(raw);
-    document.getElementById('studentName').value = s.studentName || "";
-    document.getElementById('varName').value = s.varName || "";
-    document.getElementById('qSci').value = s.qSci || "";
-    document.getElementById('qSolve').value = s.qSolve || "";
-    document.getElementById('ckRep').checked = !!s.checks?.ckRep;
-    document.getElementById('ckPad').checked = !!s.checks?.ckPad;
-    document.getElementById('ckInd').checked = !!s.checks?.ckInd;
-    document.getElementById('ckTime').checked = !!s.checks?.ckTime;
-    document.getElementById('dataInput').value = s.dataInput || "";
-    document.getElementById('chartType').value = s.chartType || "bar";
-    document.getElementById('analysisType').value = s.analysisType || "desc";
-    document.getElementById('corrMethod').value = s.corrMethod || "pearson";
-    return true;
-  }
-
-  // --------------------------
-  // UI
-  // --------------------------
-  function makeHistogram(values, bins=10){
-    const minV=Math.min(...values), maxV=Math.max(...values);
-    if(minV===maxV) return {labels:[String(minV)], counts:[values.length]};
-    const width = (maxV-minV)/bins;
-    const counts = Array(bins).fill(0);
-    for(const v of values){
-      let idx = Math.floor((v-minV)/width);
-      if(idx===bins) idx=bins-1;
-      counts[idx]++;
-    }
-    const labels = counts.map((_,i)=>{
-      const a = minV + i*width;
-      const b = a + width;
-      return `${a.toFixed(2)}–${b.toFixed(2)}`;
-    });
-    return {labels, counts};
-  }
-
-  function updateAll(){
-    const q = document.getElementById('qSci').value.trim();
-    if(!q){
-      document.getElementById('resultBox').textContent = "Preencha a pergunta científica da semana antes de rodar as análises.";
-      return;
-    }
-
-    const text = document.getElementById('dataInput').value;
-    const rows = parseText(text);
-    const varLabel = document.getElementById('varName').value || "Valor";
-    const chartType = document.getElementById('chartType').value;
-
-    if(rows.length<2){
-      document.getElementById('resultBox').textContent = "Cole seus dados (mínimo 2 linhas) e clique em Atualizar.";
-      destroyChart();
-      return;
-    }
-
-    renderChart(rows, chartType, varLabel);
-    const res = runAnalysis(rows);
-    document.getElementById('resultBox').textContent = res;
-
-    window.__lastRows = rows;
-    window.__lastResult = res;
-  }
-
-  function setDemo(){
-    document.getElementById('studentName').value = "Exemplo – Semana 02";
-    document.getElementById('varName').value = "Temperatura (°C)";
-    document.getElementById('qSci').value = "Há diferença de temperatura entre dois locais (CasaA vs CasaB) nesta semana?";
-    document.getElementById('qSolve').value = "Quero comparar dois locais e ver se a diferença é detectável.";
-    document.getElementById('ckRep').checked = true;
-    document.getElementById('ckPad').checked = true;
-    document.getElementById('ckInd').checked = true;
-    document.getElementById('ckTime').checked = true;
-
-    document.getElementById('dataInput').value =
-`CasaA, 27.1
-CasaA, 28.4
-CasaA, 29.0
-CasaA, 27.9
-CasaB, 26.2
-CasaB, 25.9
-CasaB, 26.8
-CasaB, 26.0`;
-
-    document.getElementById('chartType').value = "boxplot";
-    document.getElementById('analysisType').value = "t";
-    updateAll();
-  }
-
-  // CSV import
-  document.getElementById('csvFile').addEventListener('change', async (e)=>{
-    const file = e.target.files?.[0];
-    if(!file) return;
-    const text = await file.text();
-    const lines = text.split(/\r?\n/).filter(Boolean);
-    const out = [];
-    for(let i=0;i<lines.length;i++){
-      const line = lines[i].trim();
-      if(!line) continue;
-      if(i===0 && /[A-Za-zÀ-ÿ]/.test(line) && /grupo|group/i.test(line)) continue;
-      const parts = line.split(/[;,]/).map(s=>s.trim());
-      if(parts.length<2) continue;
-      out.push(parts.join(", "));
-    }
-    document.getElementById('dataInput').value = out.join("\n");
-    updateAll();
-  });
-
-  // Botões principais
-  document.getElementById('btnUpdate').addEventListener('click', updateAll);
-  document.getElementById('btnDemo').addEventListener('click', setDemo);
-  document.getElementById('btnSave').addEventListener('click', ()=>{ saveLocal(); alert("Salvo no navegador."); });
-  document.getElementById('btnLoad').addEventListener('click', ()=>{ if(loadLocal()) updateAll(); else alert("Nada salvo ainda."); });
-  document.getElementById('btnClear').addEventListener('click', ()=>{
-    document.getElementById('dataInput').value="";
-    destroyChart();
-    document.getElementById('resultBox').textContent="";
-  });
-
-  // Download/Export
-  document.getElementById('btnExportCSV').addEventListener('click', ()=>{
-    if(!window.__lastRows) return alert("Nada para exportar. Clique em Atualizar primeiro.");
-    exportCSV(window.__lastRows);
-  });
-  document.getElementById('btnExportJSON').addEventListener('click', ()=>{
-    if(!window.__lastRows) return alert("Nada para exportar. Clique em Atualizar primeiro.");
-    exportJSON(window.__lastRows, window.__lastResult || "");
-  });
-
-  document.getElementById('btnDownloadPlot').addEventListener('click', ()=>{
-    downloadPlotPNG();
-  });
-
-  document.getElementById('btnDownloadTXT').addEventListener('click', ()=>{
-    if(!window.__lastResult) return alert("Nada para baixar. Clique em Atualizar primeiro.");
-    downloadResultsTXT(window.__lastResult);
-  });
-
-  document.getElementById('btnDownloadPack').addEventListener('click', ()=>{
-    if(!window.__lastResult) return alert("Nada para baixar. Clique em Atualizar primeiro.");
-    downloadPlotPNG();
-    downloadResultsTXT(window.__lastResult);
-  });
-
-  // Atualizações automáticas
-  document.getElementById('chartType').addEventListener('change', updateAll);
-  document.getElementById('analysisType').addEventListener('change', updateAll);
-  document.getElementById('corrMethod').addEventListener('change', updateAll);
-
-  // Inicial
-  loadLocal();
-  if(document.getElementById('dataInput').value.trim().length){
-    updateAll();
-  } else {
-    setDemo();
-  }
+// ========== MODAL ==========
+function showModal(o){const ov=document.getElementById('modalOverlay');document.getElementById('modalIcon').textContent=o.icon||'?';document.getElementById('modalIcon').className='modal-icon '+(o.iconClass||'question');document.getElementById('modalTitle').textContent=o.title||'';document.getElementById('modalText').innerHTML=o.text||'';document.getElementById('modalExtra').innerHTML=o.extra||'';const a=document.getElementById('modalActions');a.innerHTML='';(o.buttons||[]).forEach(b=>{const btn=document.createElement('button');btn.className='modal-btn '+(b.cls||'primary');btn.textContent=b.label;btn.onclick=()=>{closeModal();if(b.action)b.action()};a.appendChild(btn)});ov.classList.add('active')}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('active')}
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
+
+// ========== TOAST ==========
+function showToast(msg,type,dur){type=type||'info';dur=dur||3500;const c=document.getElementById('toastContainer');const icons={info:'💡',success:'✅',warning:'⚠️',error:'❌'};const t=document.createElement('div');t.className='toast '+type;t.innerHTML='<span class="toast-icon">'+(icons[type]||'💡')+'</span><span>'+msg+'</span>';c.appendChild(t);setTimeout(function(){t.classList.add('fade-out');setTimeout(function(){t.remove()},300)},dur)}
+
+// ========== CONFETTI ==========
+function fireConfetti(){const cv=document.getElementById('confettiCanvas');const ctx=cv.getContext('2d');cv.width=window.innerWidth;cv.height=window.innerHeight;const cols=['#ff2d78','#2563eb','#7c3aed','#0d9488','#f59e0b','#f97316','#06b6d4','#84cc16'];const ps=[];for(let i=0;i<120;i++)ps.push({x:Math.random()*cv.width,y:-20-Math.random()*200,w:6+Math.random()*6,h:4+Math.random()*4,vx:(Math.random()-.5)*6,vy:2+Math.random()*4,rot:Math.random()*360,vr:(Math.random()-.5)*12,color:cols[Math.floor(Math.random()*cols.length)],life:1});let frame=0;(function draw(){ctx.clearRect(0,0,cv.width,cv.height);let alive=false;ps.forEach(function(p){if(p.life<=0)return;alive=true;p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.rot+=p.vr;if(frame>40)p.life-=.012;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore()});frame++;if(alive)requestAnimationFrame(draw);else ctx.clearRect(0,0,cv.width,cv.height)})()}
+
+// ========== STEPPER ==========
+var currentStep=0;
+function goStep(n){currentStep=n;document.querySelectorAll('.section').forEach(function(s,i){s.classList.toggle('active',i===n)});document.querySelectorAll('.step-item').forEach(function(s,i){s.classList.remove('active');if(i===n)s.classList.add('active')});updateBanner();window.scrollTo({top:0,behavior:'smooth'})}
+function markStepDone(n){var item=document.querySelector('.step-item[data-step="'+n+'"]');if(item)item.classList.add('done')}
+
+// ========== NUMERIC ==========
+function sum(a){var s=0;for(var i=0;i<a.length;i++)s+=a[i];return s}
+function mean(a){return a.length?sum(a)/a.length:NaN}
+function variance(a,sample){if(sample===undefined)sample=true;if(a.length<(sample?2:1))return NaN;var m=mean(a),v=0;for(var i=0;i<a.length;i++)v+=(a[i]-m)*(a[i]-m);return v/(a.length-(sample?1:0))}
+function sd(a,sample){return Math.sqrt(variance(a,sample))}
+function median(a){if(!a.length)return NaN;var b=a.slice().sort(function(x,y){return x-y});var mid=Math.floor(b.length/2);return b.length%2?b[mid]:(b[mid-1]+b[mid])/2}
+function quantile(a,q){if(!a.length)return NaN;var b=a.slice().sort(function(x,y){return x-y});var pos=(b.length-1)*q;var base=Math.floor(pos);var rest=pos-base;if(b[base+1]===undefined)return b[base];return b[base]+rest*(b[base+1]-b[base])}
+function skewness(a){var n=a.length;if(n<3)return NaN;var m=mean(a),s=sd(a,true);if(!isFinite(s)||s===0)return NaN;var g=0;for(var i=0;i<n;i++)g+=Math.pow((a[i]-m)/s,3);return g*(n/((n-1)*(n-2)))}
+function kurtosisExcess(a){var n=a.length;if(n<4)return NaN;var m=mean(a),s=sd(a,true);if(!isFinite(s)||s===0)return NaN;var t2=0;for(var i=0;i<n;i++)t2+=Math.pow((a[i]-m)/s,4);return(n*(n+1))/((n-1)*(n-2)*(n-3))*t2-(3*(n-1)*(n-1))/((n-2)*(n-3))}
+function jarqueBera(a){var n=a.length;if(n<5)return{JB:NaN,p:NaN};var s=skewness(a),k=kurtosisExcess(a);var JB=(n/6)*(s*s+(k*k)/4);return{JB:JB,p:Math.exp(-JB/2)}}
+function rank(values){var indexed=values.map(function(v,i){return{v:v,i:i}}).sort(function(a,b){return a.v-b.v});var ranks=new Array(values.length);var i=0;while(i<indexed.length){var j=i;while(j<indexed.length&&indexed[j].v===indexed[i].v)j++;var avg=(i+1+j)/2;for(var k=i;k<j;k++)ranks[indexed[k].i]=avg;i=j}return ranks}
+function phi(z){var t=1/(1+.2316419*z);var d=.3989423*Math.exp(-z*z/2);return 1-d*t*(.3193815+t*(-.3565638+t*(1.781478+t*(-1.821256+t*1.330274))))}
+function approxTPValue(t){return 2*(1-phi(Math.abs(t)))}
+function approxFPValue(F,d1,d2){if(!isFinite(F)||F<=0)return NaN;var z=Math.log(F)*Math.sqrt(Math.max(1,(d2-2))/2);return Math.max(0,Math.min(1,1-phi(z)))}
+function approxChiSqPValue(x,k){if(!isFinite(x)||x<0||k<=0)return NaN;var z=(Math.pow(x/k,1/3)-(1-2/(9*k)))/Math.sqrt(2/(9*k));return Math.max(0,Math.min(1,1-phi(z)))}
+function pearsonCorr(x,y){var n=x.length;if(n!==y.length||n<2)return{r:NaN,p:NaN};var mx=mean(x),my=mean(y);var num=0,dx=0,dy=0;for(var i=0;i<n;i++){var a=x[i]-mx,b=y[i]-my;num+=a*b;dx+=a*a;dy+=b*b}var r=num/Math.sqrt(dx*dy);var t=r*Math.sqrt((n-2)/(1-r*r));return{r:r,p:approxTPValue(t)}}
+function spearmanCorr(x,y){return pearsonCorr(rank(x),rank(y))}
+function linReg(x,y){var n=x.length;if(n!==y.length||n<2)return null;var mx=mean(x),my=mean(y);var sxx=0,sxy=0,syy=0;for(var i=0;i<n;i++){var dx=x[i]-mx,dy=y[i]-my;sxx+=dx*dx;sxy+=dx*dy;syy+=dy*dy}var b1=sxy/sxx;var b0=my-b1*mx;var yhat=x.map(function(v){return b0+b1*v});var ssRes=0;for(var i=0;i<n;i++)ssRes+=(y[i]-yhat[i])*(y[i]-yhat[i]);var r2=1-ssRes/syy;var se2=ssRes/(n-2);var seb1=Math.sqrt(se2/sxx);var t=b1/seb1;return{b0:b0,b1:b1,r2:r2,t:t,p:approxTPValue(t),yhat:yhat}}
+function tTest2(a,b){var n1=a.length,n2=b.length;if(n1<2||n2<2)return null;var m1=mean(a),m2=mean(b),v1=variance(a,true),v2=variance(b,true);var sp=Math.sqrt(((n1-1)*v1+(n2-1)*v2)/(n1+n2-2));var t=(m1-m2)/(sp*Math.sqrt(1/n1+1/n2));return{t:t,df:n1+n2-2,p:approxTPValue(t),m1:m1,m2:m2}}
+function anovaOneWay(groups){var keys=Object.keys(groups);if(keys.length<2)return null;var all=[];keys.forEach(function(k){all=all.concat(groups[k])});var grand=mean(all);var ssb=0,ssw=0,N=0;keys.forEach(function(k){var arr=groups[k];N+=arr.length;var mk=mean(arr);ssb+=arr.length*(mk-grand)*(mk-grand);for(var i=0;i<arr.length;i++)ssw+=(arr[i]-mk)*(arr[i]-mk)});var dfb=keys.length-1,dfw=N-keys.length;var F=(ssb/dfb)/(ssw/dfw);return{F:F,dfb:dfb,dfw:dfw,p:approxFPValue(F,dfb,dfw)}}
+function mannWhitney(a,b){var n1=a.length,n2=b.length;if(n1<1||n2<1)return null;var r=rank(a.concat(b));var R1=sum(r.slice(0,n1));var U1=R1-(n1*(n1+1))/2;var U=Math.min(U1,n1*n2-U1);var mu=n1*n2/2;var sigma=Math.sqrt(n1*n2*(n1+n2+1)/12);var z=(U-mu)/sigma;return{U:U,z:z,p:2*(1-phi(Math.abs(z)))}}
+function kruskalWallis(groups){var keys=Object.keys(groups);if(keys.length<2)return null;var all=[];keys.forEach(function(k){groups[k].forEach(function(v){all.push({g:k,v:v})})});var values=all.map(function(o){return o.v});var r=rank(values);var N=values.length;var sumRanks={},ns={};keys.forEach(function(k){sumRanks[k]=0;ns[k]=0});all.forEach(function(o,i){sumRanks[o.g]+=r[i];ns[o.g]++});var H=0;keys.forEach(function(k){H+=(sumRanks[k]*sumRanks[k])/ns[k]});H=(12/(N*(N+1)))*H-3*(N+1);return{H:H,df:keys.length-1,p:approxChiSqPValue(H,keys.length-1)}}
+
+// ========== SHAPIRO-WILK (approx) ==========
+function approxNormInv(p){if(p<=0)return -4;if(p>=1)return 4;if(p<.5){var t=Math.sqrt(-2*Math.log(p));return -(2.515517+.802853*t+.010328*t*t)/(1+1.432788*t+.189269*t*t+.001308*t*t*t)}else{var t=Math.sqrt(-2*Math.log(1-p));return(2.515517+.802853*t+.010328*t*t)/(1+1.432788*t+.189269*t*t+.001308*t*t*t)}}
+function shapiroWilk(data){var n=data.length;if(n<3)return{W:NaN,p:NaN};if(n>50)return null;var sorted=data.slice().sort(function(a,b){return a-b});var m=mean(data);var ss=0;for(var i=0;i<data.length;i++)ss+=(data[i]-m)*(data[i]-m);if(ss===0)return{W:NaN,p:NaN};var nHalf=Math.floor(n/2);var b=0;for(var i=0;i<nHalf;i++){var pi=(i+1-.375)/(n+.25);var piN=(n-i-.375)/(n+.25);var zi=approxNormInv(piN)-approxNormInv(pi);b+=zi*(sorted[n-1-i]-sorted[i])}var W=(b*b)/((n-1)*variance(data,true)*n);var mu=.0038915*Math.pow(Math.log(n),3)-.083751*Math.pow(Math.log(n),2)-.31082*Math.log(n)-1.5861;var sigma=Math.exp(.0030302*Math.pow(Math.log(n),2)-.082676*Math.log(n)-.4803);var z=(Math.log(1-W)-mu)/sigma;var p=1-phi(z);return{W:Math.min(1,Math.max(0,W)),p:Math.max(0,Math.min(1,p))}}
+
+// ========== LEVENE (Brown-Forsythe) ==========
+function leveneTest(groups){var keys=Object.keys(groups);if(keys.length<2)return null;var N=0;keys.forEach(function(k){N+=groups[k].length});var k=keys.length;var zGroups={};keys.forEach(function(key){var med=median(groups[key]);zGroups[key]=groups[key].map(function(x){return Math.abs(x-med)})});var allZ=[];keys.forEach(function(key){allZ=allZ.concat(zGroups[key])});var grandMeanZ=mean(allZ);var ssb=0,ssw=0;keys.forEach(function(key){var arr=zGroups[key];var mz=mean(arr);ssb+=arr.length*(mz-grandMeanZ)*(mz-grandMeanZ);for(var i=0;i<arr.length;i++)ssw+=(arr[i]-mz)*(arr[i]-mz)});var dfb=k-1,dfw=N-k;if(dfw<=0||ssw===0)return null;var F=(ssb/dfb)/(ssw/dfw);return{F:F,dfb:dfb,dfw:dfw,p:approxFPValue(F,dfb,dfw)}}
+
+// ========== PARSER ==========
+function toNum(s){if(s==null)return NaN;var str=String(s).trim();if(str.indexOf(',')>=0)return Number(str.replace(/\./g,'').replace(',','.'));return Number(str)}
+function parseText(text){var lines=text.split(/\r?\n/);var rows=[];for(var li=0;li<lines.length;li++){var line=lines[li].trim();if(!line)continue;var parts=line.split(/[\t,;]+/);var cleaned=[];for(var pi=0;pi<parts.length;pi++){var p=parts[pi].trim();if(p.length>0)cleaned.push(p)}if(cleaned.length<2)continue;var group=cleaned[0]||"Série";var n1=toNum(cleaned[1]),n2=cleaned.length>=3?toNum(cleaned[2]):NaN,n3=cleaned.length>=4?toNum(cleaned[3]):NaN;if(cleaned.length===2)rows.push({group:group,x:NaN,y:n1,size:NaN});else if(cleaned.length===3)rows.push({group:group,x:n1,y:n2,size:NaN});else rows.push({group:group,x:n1,y:n2,size:n3})}return rows.filter(function(r){return isFinite(r.y)})}
+function groupBy(rows){var g={};for(var i=0;i<rows.length;i++){var k=rows[i].group||"Série";if(!g[k])g[k]=[];g[k].push(rows[i])}return g}
+
+var formatNum=function(v){return isFinite(v)?(Number.isInteger(v)?String(v):v.toFixed(4)):"NA"};
+
+// ========== VALIDATION ==========
+function validateStep0(){var name=document.getElementById('studentName').value.trim();var q=document.getElementById('qSci').value.trim();var v=document.getElementById('varName').value.trim();var checks=[document.getElementById('ckRep').checked,document.getElementById('ckPad').checked,document.getElementById('ckInd').checked,document.getElementById('ckTime').checked];var cc=checks.filter(Boolean).length;if(!name){showModal({icon:'✏️',iconClass:'question',title:'Falta sua identificação',text:'Coloque seu <strong>nome e semana</strong> para personalizar o dossiê.',buttons:[{label:'Entendi',cls:'primary'}]});document.getElementById('studentName').focus();return}if(!q){showModal({icon:'🔬',iconClass:'warning',title:'Cadê a pergunta científica?',text:'A pergunta científica é o coração do dossiê. Sem ela, a análise não tem direção.<br><br>Dica: pense em uma relação do tipo <strong>"X influencia Y?"</strong> ou <strong>"Existe diferença entre A e B?"</strong>.',buttons:[{label:'Vou formular agora',cls:'primary'}]});document.getElementById('qSci').focus();return}if(!v){showModal({icon:'📐',iconClass:'question',title:'Qual é a variável Y?',text:'Definir a variável principal ajuda a rotular eixos e interpretar resultados.',buttons:[{label:'Pular por enquanto',cls:'secondary',action:function(){markStepDone(0);goStep(1)}},{label:'Vou preencher',cls:'primary'}]});return}if(cc<3){showModal({icon:'⚠️',iconClass:'warning',title:'Checklist incompleto',text:'Você marcou apenas <strong>'+cc+' de 4</strong> itens. Dados sem réplicas ou padronização podem comprometer a análise.<br><br>Tem certeza que quer continuar?',buttons:[{label:'Voltar e revisar',cls:'secondary'},{label:'Continuar mesmo assim',cls:'primary',action:function(){markStepDone(0);goStep(1);showToast('Tente aumentar réplicas quando possível','warning')}}]});return}markStepDone(0);goStep(1);showToast('Planejamento concluído!','success')}
+function validateStep1(){var rows=parseText(document.getElementById('dataInput').value.trim());if(rows.length<2){showModal({icon:'📋',iconClass:'warning',title:'Dados insuficientes',text:'Você precisa de pelo menos <strong>2 linhas de dados</strong>.<br><br>Quer carregar um exemplo?',buttons:[{label:'Carregar exemplo',cls:'primary',action:function(){setDemo();showToast('Exemplo carregado','success')}},{label:'Vou colar meus dados',cls:'secondary'}]});return}var byG=groupBy(rows);var keys=Object.keys(byG);var anySmall=false;keys.forEach(function(k){if(byG[k].length<3)anySmall=true});if(anySmall){var d=keys.map(function(k){return'<strong>'+k+'</strong>: '+byG[k].length+' obs.'}).join(' · ');showModal({icon:'🔍',iconClass:'info',title:'Algum grupo tem poucas réplicas',text:'Seus grupos: '+d+'<br><br>Algum tem menos de 3 observações. Deseja continuar?',buttons:[{label:'Adicionar mais dados',cls:'secondary'},{label:'Continuar',cls:'primary',action:function(){markStepDone(1);goStep(2)}}]});return}markStepDone(1);goStep(2);showToast(rows.length+' observações em '+keys.length+' grupo(s) detectados','success')}
+function validateStep2(){if(!window.__premisesRan){showModal({icon:'🔍',iconClass:'warning',title:'Premissas não verificadas',text:'Clique em <strong>"Verificar premissas"</strong> antes de prosseguir. Isso garante que você escolha o teste adequado.',buttons:[{label:'Entendi',cls:'primary'}]});return}markStepDone(2);goStep(3)}
+
+// ========== PREMISSAS ==========
+window.__premisesRan=false;
+function runPremises(){var rows=parseText(document.getElementById('dataInput').value.trim());if(rows.length<2){showToast('Volte à etapa 2 e insira dados','error');goStep(1);return}var byG=groupBy(rows);var keys=Object.keys(byG);var yAll=rows.map(function(r){return r.y});var nGroups=keys.length;
+// NORMALIDADE
+var pcNorm=document.getElementById('pcNorm'),psNorm=document.getElementById('psNorm'),pdNorm=document.getElementById('pdNorm');
+if(yAll.length<3){pcNorm.className='premise-card na';psNorm.textContent='N insuficiente';pdNorm.innerHTML='São necessárias pelo menos 3 observações para testar normalidade.'}else{var normLines=[];var allNormal=true;var anyTested=false;var targets=nGroups>=2?keys:['global'];targets.forEach(function(k){var arr=k==='global'?yAll:byG[k].map(function(r){return r.y});if(arr.length<3)return;anyTested=true;var label=k==='global'?'Geral':k;var sw=arr.length<=50?shapiroWilk(arr):null;var jb=jarqueBera(arr);if(sw&&isFinite(sw.p)){normLines.push('<strong>'+label+'</strong> (n='+arr.length+'): Shapiro–Wilk W = <code>'+formatNum(sw.W)+'</code>, p = <code>'+formatNum(sw.p)+'</code>'+(sw.p<.05?' → <strong>não normal</strong>':' → normal'));if(sw.p<.05)allNormal=false}if(isFinite(jb.p)){normLines.push('<strong>'+label+'</strong> (n='+arr.length+'): Jarque–Bera JB = <code>'+formatNum(jb.JB)+'</code>, p = <code>'+formatNum(jb.p)+'</code>'+(jb.p<.05?' → <strong>não normal</strong>':' → normal'));if(jb.p<.05)allNormal=false}if(!sw&&!isFinite(jb.p)){normLines.push('<strong>'+label+'</strong>: amostra pequena demais para teste confiável.');allNormal=false}});if(!anyTested){pcNorm.className='premise-card na';psNorm.textContent='N insuficiente';pdNorm.innerHTML='Nenhum grupo tem n ≥ 3 para testar.'}else{pcNorm.className='premise-card '+(allNormal?'pass':'fail');psNorm.textContent=allNormal?'Normal':'Não normal';pdNorm.innerHTML=normLines.join('<br>')}}
+// LEVENE
+var pcL=document.getElementById('pcLevene'),psL=document.getElementById('psLevene'),pdL=document.getElementById('pdLevene');
+if(nGroups<2){pcL.className='premise-card na';psL.textContent='Não aplicável';pdL.innerHTML='O teste de Levene exige pelo menos 2 grupos.'}else{var g={};keys.forEach(function(k){g[k]=byG[k].map(function(r){return r.y})});var lev=leveneTest(g);if(!lev){pcL.className='premise-card na';psL.textContent='Não calculável';pdL.innerHTML='Dados insuficientes para o teste de Levene.'}else{var homoOk=lev.p>=.05;pcL.className='premise-card '+(homoOk?'pass':'fail');psL.textContent=homoOk?'Homocedástico':'Heterocedástico';pdL.innerHTML='Levene (Brown–Forsythe): F('+lev.dfb+', '+lev.dfw+') = <code>'+formatNum(lev.F)+'</code>, p = <code>'+formatNum(lev.p)+'</code><br>'+(homoOk?'As variâncias são <strong>estatisticamente semelhantes</strong> (p ≥ 0,05).':'As variâncias são <strong>significativamente diferentes</strong> (p < 0,05). Considere testes não paramétricos ou correção de Welch.')}}
+// TAMANHO AMOSTRAL
+var pcN=document.getElementById('pcN'),psN=document.getElementById('psN'),pdN=document.getElementById('pdN');
+var totalN=yAll.length;var minGroup=nGroups>=2?Math.min.apply(null,keys.map(function(k){return byG[k].length})):totalN;
+var groupDetail=nGroups>=2?keys.map(function(k){return'<strong>'+k+'</strong>: n = '+byG[k].length}).join(' · '):'N total = '+totalN;
+if(totalN<5||minGroup<3){pcN.className='premise-card fail';psN.textContent='Insuficiente';pdN.innerHTML=groupDetail+'<br>O tamanho amostral é <strong>muito pequeno</strong> para testes inferenciais. Tente obter pelo menos 5 observações por grupo.'}else if(totalN<10||minGroup<5){pcN.className='premise-card warn';psN.textContent='Marginal';pdN.innerHTML=groupDetail+'<br>O tamanho amostral é <strong>marginal</strong>. Ideal: ≥ 10 por grupo para testes paramétricos.'}else{pcN.className='premise-card pass';psN.textContent='Adequado';pdN.innerHTML=groupDetail+'<br>O tamanho amostral é <strong>adequado</strong> para testes estatísticos.'}
+// INDEPENDÊNCIA
+var pcI=document.getElementById('pcIndep'),psI=document.getElementById('psIndep'),pdI=document.getElementById('pdIndep');
+var indCk=document.getElementById('ckInd').checked,repCk=document.getElementById('ckRep').checked;
+if(indCk&&repCk){pcI.className='premise-card pass';psI.textContent='Atendida';pdI.innerHTML='Você declarou que as observações são <strong>independentes</strong> e que há <strong>réplicas verdadeiras</strong>.'}else if(indCk){pcI.className='premise-card warn';psI.textContent='Parcial';pdI.innerHTML='Você declarou independência, mas <strong>não confirmou réplicas</strong>. Verifique se suas medidas são realmente independentes.'}else{pcI.className='premise-card fail';psI.textContent='Não confirmada';pdI.innerHTML='Você <strong>não confirmou independência</strong> no checklist. Dados não independentes (pseudorréplicas) podem invalidar testes. Revise seu delineamento.'}
+// RECOMENDAÇÃO
+var reco=document.getElementById('recoBox'),recoTitle=document.getElementById('recoTitle'),recoText=document.getElementById('recoText');reco.style.display='block';
+var isNormal=pcNorm.className.indexOf('pass')>=0;var isHomo=(nGroups<2)||(pcL.className.indexOf('pass')>=0);var nOk=pcN.className.indexOf('fail')<0;
+if(nGroups>=2){if(isNormal&&isHomo&&nOk){reco.className='reco-box parametric';recoTitle.innerHTML='✅ Recomendação: via paramétrica';if(nGroups===2)recoText.innerHTML='Seus dados atendem às premissas de <strong>normalidade</strong> e <strong>homocedasticidade</strong>. Teste recomendado: <strong>Teste t para amostras independentes</strong>. Gráfico: <strong>boxplot</strong> ou colunas com barras de erro.';else recoText.innerHTML='Seus dados atendem às premissas. Teste recomendado: <strong>ANOVA de um fator</strong>, seguida de pós-teste (ex.: Tukey). Gráfico: <strong>boxplot</strong>.'}else{reco.className='reco-box nonparametric';recoTitle.innerHTML='⚠️ Recomendação: via não paramétrica';var reasons=[];if(!isNormal)reasons.push('os dados <strong>não seguem distribuição normal</strong>');if(!isHomo&&nGroups>=2)reasons.push('as variâncias <strong>não são homogêneas</strong>');if(!nOk)reasons.push('o <strong>tamanho amostral é insuficiente</strong>');if(nGroups===2)recoText.innerHTML='Como '+reasons.join(' e ')+', teste recomendado: <strong>Mann–Whitney (U)</strong>. Gráfico: <strong>boxplot</strong>.';else recoText.innerHTML='Como '+reasons.join(' e ')+', teste recomendado: <strong>Kruskal–Wallis (H)</strong>, seguido de pós-teste (ex.: Dunn). Gráfico: <strong>boxplot</strong>.'}}else{reco.className='reco-box descriptive';recoTitle.innerHTML='💡 Recomendação: análise descritiva';recoText.innerHTML='Com apenas 1 grupo, a análise principal é <strong>descritiva</strong> (média, mediana, DP, quartis). Use <strong>histograma</strong> ou <strong>boxplot</strong>. Se tiver coluna X, considere <strong>correlação</strong> ou <strong>regressão</strong>.'}
+window.__premisesRan=true;showToast('Premissas verificadas!','success')}
+
+// ========== CHART ==========
+var chart=null;function destroyChart(){if(chart){chart.destroy();chart=null}}
+function brightColors(i){return["#ff2d78","#2563eb","#7c3aed","#0d9488","#f59e0b","#f97316","#06b6d4","#84cc16","#f43f5e","#4f46e5"][i%10]}
+function makeHistogram(values,bins){bins=bins||10;var minV=Math.min.apply(null,values),maxV=Math.max.apply(null,values);if(minV===maxV)return{labels:[String(minV)],counts:[values.length]};var width=(maxV-minV)/bins;var counts=[];for(var i=0;i<bins;i++)counts.push(0);for(var i=0;i<values.length;i++){var idx=Math.floor((values[i]-minV)/width);if(idx===bins)idx=bins-1;counts[idx]++}var labels=counts.map(function(_,i){var a=minV+i*width;return a.toFixed(1)+'–'+(a+width).toFixed(1)});return{labels:labels,counts:counts}}
+function renderChart(rows,chartType,varLabel){destroyChart();var ctx=document.getElementById('chart');var byG=groupBy(rows);var keys=Object.keys(byG);var explain=document.getElementById('chartExplain');
+if(chartType==="hist"){var values=rows.map(function(r){return r.y});var h=makeHistogram(values,10);chart=new Chart(ctx,{type:"bar",data:{labels:h.labels,datasets:[{label:'Histograma – '+(varLabel||"Valor"),data:h.counts,backgroundColor:h.labels.map(function(_,i){return brightColors(i)+'cc'}),borderColor:h.labels.map(function(_,i){return brightColors(i)}),borderWidth:2,borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:true,labels:{font:{family:'Outfit'}}}}}});explain.innerHTML='<strong>Histograma:</strong> mostra a distribuição dos dados.';return}
+if(chartType==="boxplot"){var datasets=keys.map(function(k,i){return{label:k,data:[byG[k].map(function(r){return r.y})],backgroundColor:brightColors(i)+'33',borderColor:brightColors(i),borderWidth:2}});chart=new Chart(ctx,{type:"boxplot",data:{labels:[""],datasets:datasets},options:{responsive:true,plugins:{legend:{position:"bottom",labels:{font:{family:'Outfit'}}}}}});explain.innerHTML='<strong>Boxplot:</strong> compara grupos. Caixa = Q1–Q3, linha = mediana, pontos fora = extremos.';return}
+if(chartType==="scatter"||chartType==="bubble"){var hasX=rows.some(function(r){return isFinite(r.x)});if(!hasX){explain.innerHTML='<strong>Este gráfico precisa de X.</strong> Use 3 colunas: Grupo, X, Y.';chart=new Chart(ctx,{type:"scatter",data:{datasets:[]},options:{responsive:true}});return}var datasets=keys.map(function(k,i){var pts=byG[k].filter(function(r){return isFinite(r.x)}).map(function(r){if(chartType==="bubble")return{x:r.x,y:r.y,r:isFinite(r.size)?Math.max(3,Math.min(18,r.size)):6};return{x:r.x,y:r.y}});return{label:k,data:pts,backgroundColor:brightColors(i)+(chartType==="bubble"?"88":"cc"),borderColor:brightColors(i),pointRadius:5}});chart=new Chart(ctx,{type:chartType==="bubble"?"bubble":"scatter",data:{datasets:datasets},options:{responsive:true,plugins:{legend:{position:"bottom",labels:{font:{family:'Outfit'}}}},scales:{x:{title:{display:true,text:"X",font:{family:'Outfit'}}},y:{title:{display:true,text:varLabel||"Y",font:{family:'Outfit'}}}}}});explain.innerHTML='<strong>Dispersão:</strong> cada ponto é uma observação (X, Y).';return}
+var means=keys.map(function(k){return mean(byG[k].map(function(r){return r.y}))});var type=chartType==="area"?"line":chartType;var dataset={label:'Média por grupo – '+(varLabel||"Valor"),data:means,backgroundColor:keys.map(function(_,i){return brightColors(i)+(type==="line"?"33":"cc")}),borderColor:keys.map(function(_,i){return brightColors(i)}),borderWidth:2,fill:chartType==="area",borderRadius:type==="bar"?8:0};
+chart=new Chart(ctx,{type:type,data:{labels:keys,datasets:[dataset]},options:{responsive:true,plugins:{legend:{display:type!=="pie"&&type!=="doughnut",labels:{font:{family:'Outfit'}}}},scales:(type==="pie"||type==="doughnut"||type==="radar")?{}:{y:{title:{display:true,text:varLabel||"Valor",font:{family:'Outfit'}}}}}});
+var et={bar:"Colunas: útil para comparar médias entre grupos.",line:"Linha: útil para sequências ordenadas.",area:"Área: destaca magnitude.",radar:"Radar: comparação de perfis.",pie:"Pizza: proporção; evite muitos grupos.",doughnut:"Rosca: proporção."}[chartType]||"Gráfico de comparação.";explain.innerHTML='<strong>Leitura do gráfico:</strong> '+et}
+
+// ========== ANALYSIS ==========
+function summarize(rows){var byG=groupBy(rows);var keys=Object.keys(byG);var y=rows.map(function(r){return r.y});var jb=jarqueBera(y);var lines=[];lines.push('Identificação: '+(document.getElementById('studentName').value||'–'));lines.push('Variável Y: '+(document.getElementById('varName').value||'–'));lines.push('Pergunta científica: '+(document.getElementById('qSci').value||'–'));var solve=document.getElementById('qSolve').value.trim();if(solve)lines.push('Objetivo prático: '+solve);var hyp=document.getElementById('hypothesis').value.trim();if(hyp)lines.push('Hipótese: '+hyp);lines.push('');lines.push('Resumo geral:');lines.push('N = '+y.length);lines.push('Média = '+formatNum(mean(y)));lines.push('Mediana = '+formatNum(median(y)));lines.push('DP (amostral) = '+formatNum(sd(y,true)));lines.push('Mínimo = '+formatNum(Math.min.apply(null,y)));lines.push('Q1 = '+formatNum(quantile(y,.25)));lines.push('Q3 = '+formatNum(quantile(y,.75)));lines.push('Máximo = '+formatNum(Math.max.apply(null,y)));lines.push('');lines.push('Normalidade (Jarque–Bera): JB = '+formatNum(jb.JB)+' | p = '+formatNum(jb.p));if(isFinite(jb.p))lines.push(jb.p>=.05?'Interpretação: compatível com normalidade (p ≥ 0,05).':'Interpretação: possível não normalidade (p < 0,05).');else lines.push('Amostra pequena para checagem de normalidade.');lines.push('');lines.push('Resumo por grupo:');keys.forEach(function(k){var arr=byG[k].map(function(r){return r.y});lines.push('  '+k+': n='+arr.length+', média='+formatNum(mean(arr))+', mediana='+formatNum(median(arr))+', DP='+formatNum(sd(arr,true)))});return{text:lines.join('\n'),jb:jb,keys:keys,byG:byG}}
+function runAnalysis(rows){var at=document.getElementById('analysisType').value;var cm=document.getElementById('corrMethod').value;var byG=groupBy(rows);var keys=Object.keys(byG);var yAll=rows.map(function(r){return r.y});var jb=jarqueBera(yAll);var parts=[];var base=summarize(rows);parts.push(base.text);parts.push('');
+if(at==="desc")parts.push("Análise: Descritiva.");
+if(at==="t"){if(keys.length===2){var a=byG[keys[0]].map(function(r){return r.y}),b=byG[keys[1]].map(function(r){return r.y});var out=tTest2(a,b);if(out){parts.push('Análise: Teste t (2 grupos).');parts.push('Grupo 1 ('+keys[0]+'): média='+formatNum(out.m1)+' | n='+a.length);parts.push('Grupo 2 ('+keys[1]+'): média='+formatNum(out.m2)+' | n='+b.length);parts.push('t = '+formatNum(out.t)+' | gl = '+out.df+' | p = '+formatNum(out.p))}}else parts.push('Aviso: teste t exige 2 grupos. Encontrados: '+keys.length+'.')}
+if(at==="anova"){if(keys.length>=2){var g={};keys.forEach(function(k){g[k]=byG[k].map(function(r){return r.y})});var out=anovaOneWay(g);if(out){parts.push('Análise: ANOVA (1 fator).');parts.push('F = '+formatNum(out.F)+' | gl = ('+out.dfb+', '+out.dfw+') | p = '+formatNum(out.p))}}else parts.push('Aviso: ANOVA exige pelo menos 2 grupos.')}
+if(at==="mw"){if(keys.length===2){var a=byG[keys[0]].map(function(r){return r.y}),b=byG[keys[1]].map(function(r){return r.y});var out=mannWhitney(a,b);if(out){parts.push('Análise: Mann–Whitney (2 grupos).');parts.push('U = '+formatNum(out.U)+' | z = '+formatNum(out.z)+' | p = '+formatNum(out.p))}}else parts.push('Aviso: Mann–Whitney exige 2 grupos.')}
+if(at==="kw"){if(keys.length>=2){var g={};keys.forEach(function(k){g[k]=byG[k].map(function(r){return r.y})});var out=kruskalWallis(g);if(out){parts.push('Análise: Kruskal–Wallis (k grupos).');parts.push('H = '+formatNum(out.H)+' | gl = '+out.df+' | p = '+formatNum(out.p))}}else parts.push('Aviso: Kruskal–Wallis exige pelo menos 2 grupos.')}
+if(at==="corr"){var xs=rows.filter(function(r){return isFinite(r.x)}).map(function(r){return r.x});var ys=rows.filter(function(r){return isFinite(r.x)}).map(function(r){return r.y});if(xs.length>=3){var out=(cm==="spearman")?spearmanCorr(xs,ys):pearsonCorr(xs,ys);parts.push('Análise: Correlação ('+cm+').');parts.push('r = '+formatNum(out.r)+' | p = '+formatNum(out.p))}else parts.push('Aviso: correlação exige X. Use 3 colunas: Grupo, X, Y.')}
+if(at==="reg"){var xs=rows.filter(function(r){return isFinite(r.x)}).map(function(r){return r.x});var ys=rows.filter(function(r){return isFinite(r.x)}).map(function(r){return r.y});if(xs.length>=3){var out=linReg(xs,ys);if(out){parts.push('Análise: Regressão linear (Y ~ X).');parts.push('Equação: Y = '+formatNum(out.b0)+' + '+formatNum(out.b1)+'·X');parts.push('R² = '+formatNum(out.r2)+' | p = '+formatNum(out.p))}}else parts.push('Aviso: regressão exige X. Use 3 colunas: Grupo, X, Y.')}
+document.getElementById('kN').textContent=rows.length;document.getElementById('kG').textContent=keys.length;document.getElementById('kJB').textContent=isFinite(jb.p)?'p='+formatNum(jb.p):'NA';document.getElementById('kJBNote').textContent=isFinite(jb.p)?(jb.p>=.05?'Sugere normalidade':'Sugere não normalidade'):'Amostra pequena';
+document.getElementById('sBannerN').textContent=rows.length;document.getElementById('sBannerG').textContent=keys.length;
+var hint=document.getElementById('autoHint');var anySmall=false;Object.keys(byG).forEach(function(k){if(byG[k].length<3)anySmall=true});var msg='';if(rows.length<5)msg+='<strong>Atenção:</strong> N muito baixo. ';if(anySmall)msg+='<strong>Atenção:</strong> algum grupo tem menos de 3 réplicas. ';if(isFinite(jb.p))msg+=jb.p>=.05?'Sugestão: testes paramétricos podem ser tentados.':'Sugestão: considere testes não paramétricos.';else msg+='Sugestão: use descrição + gráficos e aumente a amostra.';hint.innerHTML=msg;
+return parts.join('\n')}
+
+// ========== RUN ==========
+function runAndShow(){var rows=parseText(document.getElementById('dataInput').value.trim());if(rows.length<2){showToast('Volte à etapa 2 e insira dados','error');goStep(1);return}var at=document.getElementById('analysisType').value;var byG=groupBy(rows);var keys=Object.keys(byG);if((at==='t'||at==='mw')&&keys.length!==2){showModal({icon:'⚠️',iconClass:'warning',title:'Este teste exige 2 grupos',text:'Você tem <strong>'+keys.length+' grupo(s)</strong>, mas o teste compara exatamente 2.<br><br>Sugestão: use ANOVA ou Kruskal–Wallis para mais de 2 grupos.',buttons:[{label:'Entendi',cls:'primary'}]});return}if((at==='corr'||at==='reg')&&!rows.some(function(r){return isFinite(r.x)})){showModal({icon:'📐',iconClass:'info',title:'Correlação/Regressão precisa de X e Y',text:'Use 3 colunas: Grupo, X, Y.',buttons:[{label:'Voltar aos dados',cls:'secondary',action:function(){goStep(1)}},{label:'Mudar teste',cls:'primary'}]});return}var hyp=document.getElementById('hypothesis').value.trim();if(!hyp&&!window.__hypSkipped){showModal({icon:'🤔',iconClass:'question',title:'Qual é sua hipótese?',text:'Antes de ver os resultados: <strong>o que você espera encontrar?</strong><br>Isso ajuda a interpretar e evitar viés de confirmação.',extra:'<input class="modal-input" id="hypInput" type="text" placeholder="Ex.: Espero que A tenha média maior que B"/>',buttons:[{label:'Pular',cls:'secondary',action:function(){window.__hypSkipped=true;doRun()}},{label:'Confirmar',cls:'primary',action:function(){var v=document.getElementById('hypInput');if(v&&v.value)document.getElementById('hypothesis').value=v.value;window.__hypSkipped=true;doRun()}}]});return}doRun()}
+function doRun(){updateAll();markStepDone(3);goStep(4);showToast('Análise concluída!','success');updateProgress()}
+function updateAll(){var q=document.getElementById('qSci').value.trim();if(!q){document.getElementById('resultBox').textContent='Preencha a pergunta científica.';return}var rows=parseText(document.getElementById('dataInput').value);var varLabel=document.getElementById('varName').value||'Valor';var chartType=document.getElementById('chartType').value;if(rows.length<2){document.getElementById('resultBox').textContent='Cole seus dados (mínimo 2 linhas).';destroyChart();return}renderChart(rows,chartType,varLabel);var res=runAnalysis(rows);document.getElementById('resultBox').textContent=res;window.__lastRows=rows;window.__lastResult=res;updateProgress()}
+function finalizeDossie(){var pct=calcProgress();if(pct<60){showModal({icon:'📊',iconClass:'warning',title:'Dossiê ainda incompleto',text:'Completude: <strong>'+pct+'%</strong>. Revise os campos obrigatórios.',buttons:[{label:'Revisar',cls:'secondary',action:function(){goStep(0)}},{label:'Finalizar assim',cls:'primary',action:doFinalize}]});return}doFinalize()}
+function doFinalize(){fireConfetti();var name=document.getElementById('studentName').value||'Estudante';showModal({icon:'🎉',iconClass:'success',title:'Parabéns, '+name.split(/[\s\-–]/)[0]+'!',text:'Seu dossiê estatístico está pronto! Baixe os resultados, o gráfico e o pacote completo.<br><br>Continue praticando e aumentando suas réplicas a cada semana!',buttons:[{label:'Obrigado!',cls:'primary'}]})}
+
+// ========== BANNER & PROGRESS ==========
+function updateBanner(){var name=document.getElementById('studentName').value.trim();var q=document.getElementById('qSci').value.trim();var banner=document.getElementById('studentBanner');if(name||q){banner.classList.add('visible');document.getElementById('studentDisplayName').textContent=name||'Estudante';document.getElementById('studentDisplayQ').textContent=q||'Sem pergunta definida';document.getElementById('studentAvatar').textContent=(name||'?')[0].toUpperCase();var checks=[document.getElementById('ckRep').checked,document.getElementById('ckPad').checked,document.getElementById('ckInd').checked,document.getElementById('ckTime').checked];document.getElementById('sBannerCheck').textContent=checks.filter(Boolean).length+'/4'}else{banner.classList.remove('visible')}}
+function updateChecklist(){document.querySelectorAll('.check-item').forEach(function(ci){ci.classList.toggle('checked',ci.querySelector('input').checked)});updateBanner()}
+function calcProgress(){var s=0,t=8;if(document.getElementById('studentName').value.trim())s++;if(document.getElementById('qSci').value.trim())s++;if(document.getElementById('varName').value.trim())s++;var ck=[document.getElementById('ckRep').checked,document.getElementById('ckPad').checked,document.getElementById('ckInd').checked,document.getElementById('ckTime').checked];if(ck.filter(Boolean).length>=3)s++;if(parseText(document.getElementById('dataInput').value).length>=2)s++;if(window.__premisesRan)s++;if(window.__lastResult)s++;if(document.getElementById('hypothesis').value.trim())s++;return Math.round((s/t)*100)}
+function updateProgress(){var pct=calcProgress();var ring=document.getElementById('progressRing');var circ=2*Math.PI*28;ring.style.strokeDashoffset=circ-(pct/100)*circ;document.getElementById('progressPct').textContent=pct+'%';document.getElementById('progressDetail').textContent=pct===100?'Dossiê completo! Pronto para exportar.':pct>=70?'Quase lá! Faltam poucos itens.':'Preencha todos os campos para completar.'}
+
+// ========== DEMO / CLEAR ==========
+function setDemo(){document.getElementById('studentName').value='Exemplo – Semana 02';document.getElementById('varName').value='Temperatura (°C)';document.getElementById('qSci').value='Há diferença de temperatura entre dois locais (CasaA vs CasaB) nesta semana?';document.getElementById('qSolve').value='Quero comparar dois locais e ver se a diferença é detectável.';document.getElementById('hypothesis').value='Espero que CasaA tenha temperatura maior que CasaB.';document.getElementById('ckRep').checked=true;document.getElementById('ckPad').checked=true;document.getElementById('ckInd').checked=true;document.getElementById('ckTime').checked=true;updateChecklist();document.getElementById('dataInput').value='CasaA, 27.1\nCasaA, 28.4\nCasaA, 29.0\nCasaA, 27.9\nCasaB, 26.2\nCasaB, 25.9\nCasaB, 26.8\nCasaB, 26.0';document.getElementById('chartType').value='boxplot';document.getElementById('analysisType').value='t';updateBanner()}
+function clearData(){showModal({icon:'🗑️',iconClass:'warning',title:'Limpar todos os dados?',text:'Isso vai apagar o conteúdo da área de dados.',buttons:[{label:'Cancelar',cls:'secondary'},{label:'Limpar',cls:'danger',action:function(){document.getElementById('dataInput').value='';destroyChart();document.getElementById('resultBox').textContent='';showToast('Dados limpos','warning')}}]})}
+
+// ========== EXPORTS ==========
+function downloadText(fn,text,mime){var blob=new Blob([text],{type:mime});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},2000)}
+function exportCSV(rows){var head='Grupo,X,Y,Tamanho\n';var body=rows.map(function(r){return r.group+','+(isFinite(r.x)?r.x:'')+','+r.y+','+(isFinite(r.size)?r.size:'')}).join('\n');downloadText('dados.csv',head+body,'text/csv')}
+function exportJSON(rows,res){downloadText('dossie.json',JSON.stringify({studentName:document.getElementById('studentName').value,variableY:document.getElementById('varName').value,questionScientific:document.getElementById('qSci').value,hypothesis:document.getElementById('hypothesis').value,rows:rows,result:res,exportedAt:new Date().toISOString()},null,2),'application/json')}
+function downloadPlotPNG(){if(!chart)return showToast('Nenhum gráfico disponível','error');var url=chart.toBase64Image('image/png',1);var a=document.createElement('a');a.href=url;a.download='grafico.png';document.body.appendChild(a);a.click();a.remove()}
+function downloadResultsTXT(r){var id=(document.getElementById('studentName').value||'dossie').replace(/[^\w\-]+/g,'_');downloadText(id+'_resultados.txt',r,'text/plain;charset=utf-8')}
+
+// ========== EVENTS ==========
+document.getElementById('btnDownloadPlot').addEventListener('click',downloadPlotPNG);
+document.getElementById('btnDownloadTXT').addEventListener('click',function(){if(!window.__lastResult)return showToast('Rode a análise primeiro','error');downloadResultsTXT(window.__lastResult);showToast('Resultados exportados','success')});
+document.getElementById('btnExportCSV').addEventListener('click',function(){if(!window.__lastRows)return showToast('Rode a análise primeiro','error');exportCSV(window.__lastRows);showToast('CSV exportado','success')});
+document.getElementById('btnExportJSON').addEventListener('click',function(){if(!window.__lastRows)return showToast('Rode a análise primeiro','error');exportJSON(window.__lastRows,window.__lastResult||'');showToast('JSON exportado','success')});
+document.getElementById('btnDownloadPack').addEventListener('click',function(){if(!window.__lastResult)return showToast('Rode a análise primeiro','error');downloadPlotPNG();downloadResultsTXT(window.__lastResult);showToast('Pacote completo baixado','success')});
+document.getElementById('chartType').addEventListener('change',function(){if(window.__lastRows)updateAll()});
+document.getElementById('analysisType').addEventListener('change',function(){if(window.__lastRows)updateAll()});
+document.getElementById('corrMethod').addEventListener('change',function(){if(window.__lastRows)updateAll()});
+document.getElementById('csvFile').addEventListener('change',function(e){var file=e.target.files&&e.target.files[0];if(!file)return;file.text().then(function(text){var lines=text.split(/\r?\n/).filter(Boolean);var out=[];for(var i=0;i<lines.length;i++){var line=lines[i].trim();if(!line)continue;if(i===0&&/[A-Za-z]/.test(line)&&/grupo|group/i.test(line))continue;var parts=line.split(/[;,]/).map(function(s){return s.trim()});if(parts.length<2)continue;out.push(parts.join(', '))}document.getElementById('dataInput').value=out.join('\n');showToast(out.length+' linhas importadas do CSV','success')})});
+document.getElementById('studentName').addEventListener('input',updateBanner);
+document.getElementById('qSci').addEventListener('input',updateBanner);
+updateBanner();
 </script>
 </body>
 </html>
