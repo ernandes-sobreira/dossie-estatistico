@@ -1504,21 +1504,7 @@ input[type="file"] {
       </div>
 
       <!-- AI Quick Panel on dashboard -->
-      <div class="ai-panel" id="dashAIPanel">
-        <div class="ai-panel-header">
-          <div class="ai-orb">✦</div>
-          <div>
-            <div class="ai-panel-label">Orientador Inteligente</div>
-            <div class="ai-panel-sublabel">Interpretação e sugestões analíticas automatizadas</div>
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="navTo('dados')" style="margin-left:auto">Inserir dados ➜</button>
-        </div>
-        <div class="ai-panel-body">
-          <div class="ai-response" id="dashAIMsg">
-            Insira seus dados e execute a análise para receber orientação estatística personalizada, interpretação dos resultados e sugestões de próximos passos.
-          </div>
-        </div>
-      </div>
+      
 
       <!-- How it works -->
       <div class="card">
@@ -1804,23 +1790,7 @@ input[type="file"] {
         <div class="reco-text" id="recoText"></div>
       </div>
 
-      <!-- AI Panel -->
-      <div class="ai-panel" id="premAIPanel" style="display:none">
-        <div class="ai-panel-header">
-          <div class="ai-orb">✦</div>
-          <div>
-            <div class="ai-panel-label">Interpretação Analítica Inteligente</div>
-            <div class="ai-panel-sublabel">Análise e orientação dos resultados das premissas</div>
-          </div>
-        </div>
-        <div class="ai-panel-body">
-          <div class="ai-response" id="premAIMsg">Aguardando resultado das premissas...</div>
-          <div class="ai-btn-row">
-            <button class="btn btn-ghost btn-sm" onclick="askAIPremissas()">✦ Pedir explicação detalhada</button>
-            <button class="btn btn-ghost btn-sm" onclick="navTo('análise')">Ir para análise ➜</button>
-          </div>
-        </div>
-      </div>
+
 
       <div class="nav-btns">
         <button class="btn btn-ghost" onclick="navTo('dados')">← Dados</button>
@@ -2042,27 +2012,7 @@ input[type="file"] {
         <div class="chart-explain" id="regChartExplain"></div>
       </div>
 
-      <!-- AI Interpretation Panel -->
-      <div class="ai-panel" id="resultsAIPanel">
-        <div class="ai-panel-header">
-          <div class="ai-orb">✦</div>
-          <div>
-            <div class="ai-panel-label">Interpretação Analítica Inteligente</div>
-            <div class="ai-panel-sublabel">Análise contextualizada dos resultados estatísticos</div>
-          </div>
-          <button class="btn btn-accent btn-sm" onclick="askAIInterpretação()" style="margin-left:auto">✦ Gerar interpretação</button>
-        </div>
-        <div class="ai-panel-body">
-          <div class="ai-response" id="resultsAIMsg">
-            Clique em "Gerar interpretação" para receber uma análise científica detalhada dos seus resultados, incluindo implicações, limitações e sugestões.
-          </div>
-          <div class="ai-btn-row" id="resultsAIBtns" style="display:none">
-            <button class="btn btn-ghost btn-sm" onclick="askAIResultados()">📝 Gerar texto para resultados</button>
-            <button class="btn btn-ghost btn-sm" onclick="askAIDiscussao()">💬 Iniciar discussão</button>
-            <button class="btn btn-ghost btn-sm" onclick="askAILimitacoes()">⚠️ Listar limitações</button>
-          </div>
-        </div>
-      </div>
+
 
       <!-- Statistical Output -->
       <div class="card">
@@ -2102,12 +2052,12 @@ input[type="file"] {
 
       <div class="ai-panel">
         <div class="ai-panel-header">
-          <div class="ai-orb">✦</div>
+          
           <div>
-            <div class="ai-panel-label">Assistente de Decisão Estatística</div>
-            <div class="ai-panel-sublabel">Responda as perguntas para encontrar o teste adequado ao seu contexto</div>
+            <div class="ai-panel-label">Fluxograma de Decisão Estatística</div>
+            <div class="ai-panel-sublabel">Responda as perguntas para identificar o teste adequado</div>
           </div>
-          <button class="btn btn-ghost btn-sm" onclick="resetFlowchart()" style="margin-left:auto">Recomecar</button>
+          <button class="btn btn-ghost btn-sm" onclick="resetFlowchart()" style="margin-left:auto">Recomeçar</button>
         </div>
         <div class="ai-panel-body">
           <div id="flowchartContainer">
@@ -2126,10 +2076,7 @@ input[type="file"] {
               <div id="flowResultText" style="font-size:14px;line-height:1.7;"></div>
             </div>
           </div>
-          <div class="ai-btn-row">
-            <button class="btn btn-ghost btn-sm" onclick="askAIFluxo()">✦ Consultar análise inteligente para meu caso</button>
-          </div>
-          <div id="fluxoAIResponse" class="ai-response mt-16" style="display:none"></div>
+
         </div>
       </div>
 
@@ -2757,7 +2704,7 @@ function runPremises(){
   renderNormChart(yAll,byG,keys);
   renderQQPlot(yAll,byG,keys);
   document.getElementById('premAIPanel').style.display='block';
-  document.getElementById('premAIMsg').textContent='Premissas verificadas. Clique em "Pedir explicação detalhada" para interpretação analítica inteligente.';
+
   showToast('Premissas verificadas!','success');
   markStepDone(2);
 }
